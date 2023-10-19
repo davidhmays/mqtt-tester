@@ -9,19 +9,15 @@
 
 //YES this is all spaghetti. It was made quickly for tesing..
 
-/// <reference path="../node_modules/mqtt/build/mqtt.d.ts" />
-import * as mqtt from 'mqtt/dist/mqtt.min'
-
-
-
 let url = "ws://broker.hivemq.com:8000/mqtt";
 let client_id = "clientId-54t4sP6pzs";
 
 
 const subscriptions: any[] = [];
 
-const options: mqtt.IClientOptions = {
-}
+// const options: mqtt.IClientOptions = {
+// }
+
 
 
 console.log(mqtt)

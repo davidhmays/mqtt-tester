@@ -20,7 +20,7 @@
     <header>
       <h1>MQTT Tester</h1>
     </header>
-    <span id="current_user"></span>
+    <span id="client_id"></span>
 
     <nav>
       <ul>
@@ -75,7 +75,7 @@
       <div class="form_content">
         <div class="form_group">
           <label for="">URL</label>
-          <input type="text" id="url_input">
+          <input type="text" id="url_input" value="ws://broker.hivemq.com:8000/mqtt">
         </div>
 
         <div class="form_group">
@@ -110,7 +110,7 @@
 
 
       <footer>
-        <button class="secondary" id="get_id">Get client id</button>
+        <!-- <button class="secondary" id="get_id">Get client id</button> -->
         <!-- <button class="secondary" id="disconnect">Disconnect</button> -->
         <button>Connect</button>
       </footer>

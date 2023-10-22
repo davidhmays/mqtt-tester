@@ -67,7 +67,7 @@ nav {
   display: flex;
   flex-direction: column;
   align-content: center;
-  width: fit-content;
+  width: 100%;
   /* padding: 16px; */
 }
 
@@ -179,7 +179,7 @@ form {
 .form_group input {
   height: 1.5rem;
   padding: 8px 4px 4px 8px;
-  width: 32ch;
+  width: 36ch;
 }
 
 /* #url_input {
@@ -222,4 +222,8 @@ form {
 
 .icon.check_circle {
   margin-left: auto;
+}
+
+#client_id {
+  font-size: 9px;
 }

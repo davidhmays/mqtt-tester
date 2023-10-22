@@ -19,13 +19,15 @@ import MqttClient from "mqtt/lib/client"
 import { connect } from "mqtt";
 import { IClientOptions } from 'mqtt/lib/client';
 import * as mqtt from 'mqtt/dist/mqtt.min'
+import { Buffer } from "buffer";
+
 
 console.log(mqtt)
 let mqtt_client: MqttClient | null = null
 
 
 const subscriptions: any[] = [];
-const generate_id = () =>
+const generate_user = () =>
 {
     var a = ["Impatient", "Blue", "Ugly", "Friendly", "Sunny", "Quick", "Intelligent", "Curious", "Elegant", "Delightful", "Playful", "Vibrant", "Clever", "Lively", "Cozy", "Radiant", "Sparkling", "Adventurous", "Mysterious", "Peaceful"]
     var b = ["Banana", "Penguin", "Rock", "Pickle", "Noodle", "Giraffe", "Squirrel", "Sock", "Llama", "Wombat", "Pancake", "Unicorn", "Pajamas", "Bear", "Taco", "Tire", "Lobster", "Pineapple", "Kangaroo", "Beluga"];
@@ -33,16 +35,38 @@ const generate_id = () =>
     var rB = Math.floor(Math.random() * b.length);
     return a[rA] + b[rB];
 }
+const generate_id = (a) =>
+  a ? (a ^ ((Math.random() * 16) >> (a / 4))).toString(16)
+    : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(
+        /[018]/g,
+        generate_id
+      );
 
-const client_id_ui: HTMLSpanElement = document.getElementById("current_user")
-client_id_ui.innerHTML = generate_id()
-const client_id_input: HTMLInputElement = document.getElementById("client_id_input")
-client_id_input.addEventListener("input", (event) =>
-{
-    client_id_ui.innerHTML = event.target.valule;
-});
+
+const client_id_ui: HTMLDivElement = document.getElementById("client_id");
+
+
+const user_ui: HTMLDivElement = document.getElementById("user_id");
+user_ui.innerHTML = generate_user();
+
+const client_id_input: HTMLInputElement = document.getElementById("client_id_input");
+client_id_input.setAttribute("value", generate_id());
+client_id_ui.innerHTML = client_id_input.value
+client_id_input.addEventListener("input", (event) => {client_id_ui.innerHTML = event.target.value;});
+
+const user_input: HTMLInputElement = document.getElementById("username_input");
+user_input.setAttribute("value", generate_user());
+user_ui.innerHTML = user_input.value;
+user_input.addEventListener("input", (event)=> {user_ui.innerHTML = event.target.value;})
+
+
 // Get the updated value from the input element
-const url_input: HTMLInputElement = document.getElementById("url_input")
+const url_input: HTMLInputElement = document.getElementById("url_input");
+const password_input: HTMLInputElement = document.getElementById("password_input");
+const lwt_topic_input: HTMLInputElement = document.getElementById("lwt_topic_input");
+const lwt_message_input: HTMLInputElement = document.getElementById("lwt_message_input");
+const lwt_qos_input: HTMLInputElement = document.getElementById("lwt_qos_input");
+
 
 // const get_id_button = document.querySelector("#get_id")
 // get_id_button.addEventListener("click", function () { window.open("https://www.hivemq.com/demos/websocket-client", "_blank") })
@@ -85,9 +109,21 @@ add_sub_button.addEventListener("click", subscribe_pane_toggle);
 
 const get_client_inputs = (): [string, IClientOptions] =>
 {
-    const url = url_input.value;
-    const options = {
-        clientId: client_id_input.value
+    const utf_encoder = new TextEncoder();
+    const encoded: Uint8Array = utf_encoder.encode(lwt_message_input.va)
+
+    const url:string = url_input.value;
+    const options:IClientOptions = {
+        clientId: client_id_input.value,
+        // username: user_input.value,
+        // password: password_input.value,
+        will: {
+          topic: "wi/disconnects",
+          payload: "Disconnected unexpectedly | ",
+              //  payload: Buffer.from(utf_encoder.encode(lwt_message_input.value)), 
+          qos: 1,
+          retain: true
+        }
     }
 
     return [url, options]
@@ -110,7 +146,7 @@ mqtt_client.on("connect", () =>
         checkmark.removeAttribute("hidden")
     };
 
-    //Post username to 
+    //Post username to  
     mqtt_client.publish("participants", client_id_input.value)
     mqtt_client.subscribe("participants");
     mqtt_client.publish("participants", client_id_input.value)
@@ -171,12 +207,5 @@ mqtt_client.on("message", (topic, message) =>
     // mqtt_client.end();
 });
 
-class MqttConnectionManager
-{
-    constructor()
-    {
-
-    }
-}
 
 

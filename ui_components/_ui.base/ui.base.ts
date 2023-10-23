@@ -1,6 +1,6 @@
 import DMSwitch from "./elements/dm-switch/dm-switch"
 
-export default function initCustomElements(): void
+export default function init_custom_elements(): void
 {
 
     const customElements = new Map<string, unknown>([

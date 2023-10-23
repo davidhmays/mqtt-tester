@@ -128,6 +128,14 @@ button:hover {
   color: rgba(255, 255, 255, 0.9);
 }
 
+.check_circle {
+  cursor: pointer;
+}
+
+dm-switch {
+  margin-left: auto;
+}
+
 .none {
   display: none;
 }
@@ -191,7 +199,7 @@ form {
 } */
 
 #qos_input {
-  width: 12ch;
+  width: 6ch;
 }
 
 #connect_form,

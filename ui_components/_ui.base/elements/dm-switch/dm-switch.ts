@@ -1,5 +1,5 @@
 import DMElement from "../dm-element/dm-element";
-import cssText from "./dm-switch.css";
+import cssText from "./dm-switch.css?inline";
 import htmlText from "./dm-switch.svg?raw";
 
 export default class DMSwitch extends DMElement

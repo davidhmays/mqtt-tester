@@ -138,7 +138,7 @@ const get_client_inputs = (): [string, IClientOptions] =>
         username: user_input.value,
         password: password_input.value,
         will: {
-            topic: "asd",
+            topic: lwt_message_input.value,
             payload: client_id_input.value + "-" + user_input.value + ": " + lwt_message_input.value, // The Node.js types complain here expecting a "buffer" type. The Browser version of MQTT.js handles the string fine. I just couldn't get the browser version types working.
             qos: lwt_qos_input.value as mqtt.QoS,
             retain: lwt_retain_val()

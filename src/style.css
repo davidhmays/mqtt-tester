@@ -31,7 +31,7 @@ aside li {
   list-style-type: none;
   padding: 0;
   margin: 0.125rem 1rem;
-
+  min-width: 110px;
 }
 
 aside ul {
@@ -126,6 +126,10 @@ button:hover {
   background-color: dodgerblue;
   border-color: dodgerblue;
   color: rgba(255, 255, 255, 0.9);
+}
+
+.none {
+  display: none;
 }
 
 .card {

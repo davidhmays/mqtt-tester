@@ -65,7 +65,7 @@ const url_input: HTMLInputElement = document.getElementById("url_input");
 const password_input: HTMLInputElement = document.getElementById("password_input");
 const lwt_topic_input: HTMLInputElement = document.getElementById("lwt_topic_input");
 const lwt_message_input: HTMLInputElement = document.getElementById("lwt_message_input");
-const lwt_qos_input: HTMLInputElement = document.getElementById("lwt_qos_input");
+// const lwt_qos_input: HTMLInputElement = document.getElementById("lwt_qos_input");
 
 
 // const get_id_button = document.querySelector("#get_id")
@@ -75,7 +75,8 @@ const open_conn_button = document.getElementById("open_connection");
 const add_sub_button = document.getElementById("add_subscription");
 const connect_form = document.getElementById("connect_form");
 const subscribe_form = document.getElementById("subscribe_form");
-const checkmark = document.getElementById("checkmark")
+const connected_icons = document.querySelectorAll(".check_circle")
+const disconnected_icons = document.querySelectorAll(".plug_disconnected")
 // const disconnect_icon = document.querySelector("#disconnect")
 
 
@@ -110,17 +111,15 @@ add_sub_button.addEventListener("click", subscribe_pane_toggle);
 const get_client_inputs = (): [string, IClientOptions] =>
 {
     const utf_encoder = new TextEncoder();
-    const encoded: Uint8Array = utf_encoder.encode(lwt_message_input.va)
 
     const url:string = url_input.value;
     const options:IClientOptions = {
         clientId: client_id_input.value,
-        // username: user_input.value,
-        // password: password_input.value,
+        username: user_input.value,
+        password: 'password_input.value',
         will: {
-          topic: "wi/disconnects",
-          payload: "Disconnected unexpectedly | ",
-              //  payload: Buffer.from(utf_encoder.encode(lwt_message_input.value)), 
+          topic: "asd",
+          payload: "Disconnected unexpectedly | ", // The Node.js types complain here expecting a "buffer" type. The Browser version of MQTT.js handles the string fine. I just couldn't get the browser version types working.
           qos: 1,
           retain: true
         }
@@ -129,6 +128,7 @@ const get_client_inputs = (): [string, IClientOptions] =>
     return [url, options]
 }
 
+//TODO:Pass in broker and client. Allow swtiching brokers, or from MQTT.js to Paho etc.
 const connect_to_broker = () =>
 {
     const [url, options] = get_client_inputs();
@@ -140,11 +140,17 @@ connect_to_broker();
 
 mqtt_client.on("connect", () =>
 {
+    connected_icons.forEach(element => {
+        if(element.classList.contains("none")) {
+            element.classList.remove("none")
+        }
+    })
 
-    if (checkmark.hasAttribute("hidden"))
-    {
-        checkmark.removeAttribute("hidden")
-    };
+    disconnected_icons.forEach(element => {
+        if(!element.classList.contains("none")) {
+            element.classList.add("none")
+        }
+    })
 
     //Post username to  
     mqtt_client.publish("participants", client_id_input.value)
@@ -194,10 +200,17 @@ const subscribe = (topic: string) =>
 mqtt_client.on("disconnect", () =>
 {
 
-    if (!checkmark.hasAttribute("hidden"))
-    {
-        checkmark.setAttribute("hidden", "")
-    };
+    connected_icons.forEach(element => {
+        if(!element.classList.contains("none")) {
+            element.classList.add("none")
+        }
+    })
+
+    disconnected_icons.forEach(element => {
+        if(element.classList.contains("none")) {
+            element.classList.remove("none")
+        }
+    })
 });
 
 mqtt_client.on("message", (topic, message) =>

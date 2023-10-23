@@ -1,0 +1,35 @@
+:host {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+g {
+    transition: transform 0.2s ease-in-out;
+}
+
+:host([on]) g {
+    transform: translateX(28px);
+}
+
+:host([on]) g circle {
+    fill: var(--base_color-accent);
+}
+
+.checkmark-icon,
+.x-icon {
+    transition: opacity 0.2s ease-in-out;
+}
+
+g .x-icon {
+    opacity: 1;
+}
+
+:host([on]) g .x-icon {
+    opacity: 0;
+}
+
+
+:host([on]) g .checkmark-icon {
+    opacity: 1;
+}

@@ -16,11 +16,10 @@
 // the types while developing then turn off the node imports. 
 
 import MqttClient from "mqtt/lib/client"
-import { connect } from "mqtt";
 import { IClientOptions } from 'mqtt/lib/client';
 import * as mqtt from 'mqtt/dist/mqtt.min'
-import { Buffer } from "buffer";
-
+import initCustomelEments from "../ui_components/_ui.base/ui.base.ts"
+initCustomelEments();
 
 console.log(mqtt)
 let mqtt_client: MqttClient | null = null
@@ -36,11 +35,11 @@ const generate_user = () =>
     return a[rA] + b[rB];
 }
 const generate_id = (a) =>
-  a ? (a ^ ((Math.random() * 16) >> (a / 4))).toString(16)
-    : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(
-        /[018]/g,
-        generate_id
-      );
+    a ? (a ^ ((Math.random() * 16) >> (a / 4))).toString(16)
+        : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(
+            /[018]/g,
+            generate_id
+        );
 
 
 const client_id_ui: HTMLDivElement = document.getElementById("client_id");
@@ -52,12 +51,12 @@ user_ui.innerHTML = generate_user();
 const client_id_input: HTMLInputElement = document.getElementById("client_id_input");
 client_id_input.setAttribute("value", generate_id());
 client_id_ui.innerHTML = client_id_input.value
-client_id_input.addEventListener("input", (event) => {client_id_ui.innerHTML = event.target.value;});
+client_id_input.addEventListener("input", (event) => { client_id_ui.innerHTML = event.target.value; });
 
 const user_input: HTMLInputElement = document.getElementById("username_input");
 user_input.setAttribute("value", generate_user());
 user_ui.innerHTML = user_input.value;
-user_input.addEventListener("input", (event)=> {user_ui.innerHTML = event.target.value;})
+user_input.addEventListener("input", (event) => { user_ui.innerHTML = event.target.value; })
 
 
 // Get the updated value from the input element
@@ -65,7 +64,8 @@ const url_input: HTMLInputElement = document.getElementById("url_input");
 const password_input: HTMLInputElement = document.getElementById("password_input");
 const lwt_topic_input: HTMLInputElement = document.getElementById("lwt_topic_input");
 const lwt_message_input: HTMLInputElement = document.getElementById("lwt_message_input");
-// const lwt_qos_input: HTMLInputElement = document.getElementById("lwt_qos_input");
+const lwt_qos_input: HTMLInputElement = document.getElementById("lwt_qos_input");
+const keep_alive_input: HTMLInputElement = document.getElementById("keep_alive_input");
 
 
 // const get_id_button = document.querySelector("#get_id")
@@ -112,17 +112,20 @@ const get_client_inputs = (): [string, IClientOptions] =>
 {
     const utf_encoder = new TextEncoder();
 
-    const url:string = url_input.value;
-    const options:IClientOptions = {
+    const url: string = url_input.value;
+    const options: IClientOptions = {
         clientId: client_id_input.value,
         username: user_input.value,
-        password: 'password_input.value',
+        password: password_input.value,
         will: {
-          topic: "asd",
-          payload: "Disconnected unexpectedly | ", // The Node.js types complain here expecting a "buffer" type. The Browser version of MQTT.js handles the string fine. I just couldn't get the browser version types working.
-          qos: 1,
-          retain: true
-        }
+            topic: "asd",
+            payload: "Disconnected unexpectedly | " + client_id_input.value + "-" + user_input.value, // The Node.js types complain here expecting a "buffer" type. The Browser version of MQTT.js handles the string fine. I just couldn't get the browser version types working.
+            qos: lwt_qos_input.value as mqtt.Qos,
+            retain: true
+        },
+        keepalive: parseInt(keep_alive_input.value) as number,
+        // clean: 
+        // ssl ? 
     }
 
     return [url, options]
@@ -140,14 +143,18 @@ connect_to_broker();
 
 mqtt_client.on("connect", () =>
 {
-    connected_icons.forEach(element => {
-        if(element.classList.contains("none")) {
+    connected_icons.forEach(element =>
+    {
+        if (element.classList.contains("none"))
+        {
             element.classList.remove("none")
         }
     })
 
-    disconnected_icons.forEach(element => {
-        if(!element.classList.contains("none")) {
+    disconnected_icons.forEach(element =>
+    {
+        if (!element.classList.contains("none"))
+        {
             element.classList.add("none")
         }
     })
@@ -200,14 +207,18 @@ const subscribe = (topic: string) =>
 mqtt_client.on("disconnect", () =>
 {
 
-    connected_icons.forEach(element => {
-        if(!element.classList.contains("none")) {
+    connected_icons.forEach(element =>
+    {
+        if (!element.classList.contains("none"))
+        {
             element.classList.add("none")
         }
     })
 
-    disconnected_icons.forEach(element => {
-        if(element.classList.contains("none")) {
+    disconnected_icons.forEach(element =>
+    {
+        if (element.classList.contains("none"))
+        {
             element.classList.remove("none")
         }
     })

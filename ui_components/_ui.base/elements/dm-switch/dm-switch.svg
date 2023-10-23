@@ -1,0 +1,16 @@
+<svg width="48" height="24" viewBox="0 0 48 30" xmlns="http://www.w3.org/2000/svg">
+    <!-- Track -->
+    <rect x="0" y="10" width="48" height="10" fill="#ccc" rx="5" />
+
+    <!-- Moving Circle (Slider) -->
+    <g transform="translate(0, 0)">
+        <circle class="slider-circle" cx="10" cy="15" r="10" fill="var(--base_color-secondary)" />
+        <path class="checkmark-icon" d="M4 15 L8 19 L16 10" stroke="#fff" stroke-width="2" fill="none" opacity="0"
+            stroke-linecap="round" stroke-linejoin="round" />
+        <path class="x-icon" d="M7 12 L13 18 M7 18 L13 12" stroke="#fff" stroke-width="2" fill="none"
+            stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+
+    <!-- Clickable Area -->
+    <rect x="0" y="0" width="48" height="24" fill="transparent" />
+</svg>

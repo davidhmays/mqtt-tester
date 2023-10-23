@@ -22,7 +22,7 @@
     </header>
     <div id="user_id"></div>
     <div id="client_id"></div>
-    
+
 
     <nav>
       <ul>
@@ -31,18 +31,18 @@
           <ul>
             <li style="display: flex; align-content: center;">
               <a href="#" id="open_connection">Connect</a>
-              
-              <svg xmlns="http://www.w3.org/2000/svg" style="margin-left: auto" id="checkmark" class="none icon check_circle" width="16"
-                viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffec00" fill="none" stroke-linecap="round"
-                stroke-linejoin="round">
+
+              <svg xmlns="http://www.w3.org/2000/svg" style="margin-left: auto" id="checkmark"
+                class="none icon check_circle" width="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffec00"
+                fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path
                   d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-1.293 5.953a1 1 0 0 0 -1.32 -.083l-.094 .083l-3.293 3.292l-1.293 -1.292l-.094 -.083a1 1 0 0 0 -1.403 1.403l.083 .094l2 2l.094 .083a1 1 0 0 0 1.226 0l.094 -.083l4 -4l.083 -.094a1 1 0 0 0 -.083 -1.32z"
                   stroke-width="0" fill="black" />
-              </svg>  
-              
-              <svg xmlns="http://www.w3.org/2000/svg" class="icon plug_disconnected" style="margin-left: auto;" id="plug_disconnected" width="16"
-                viewBox="0 0 24 24" stroke-width="2" stroke="red" fill="none"
+              </svg>
+
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon plug_disconnected" style="margin-left: auto;"
+                id="plug_disconnected" width="16" viewBox="0 0 24 24" stroke-width="2" stroke="red" fill="none"
                 stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M20 16l-4 4"></path>
@@ -53,7 +53,7 @@
                 <path d="M10 11l-2 2"></path>
                 <path d="M13 14l-2 2"></path>
                 <path d="M16 16l4 4"></path>
-            </svg>
+              </svg>
             </li>
             <li>
               <a href="#" id="add_subscription">Subscribe</a>
@@ -82,19 +82,19 @@
             d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-1.293 5.953a1 1 0 0 0 -1.32 -.083l-.094 .083l-3.293 3.292l-1.293 -1.292l-.094 -.083a1 1 0 0 0 -1.403 1.403l.083 .094l2 2l.094 .083a1 1 0 0 0 1.226 0l.094 -.083l4 -4l.083 -.094a1 1 0 0 0 -.083 -1.32z"
             stroke-width="0" fill="black" />
         </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" style="margin-left: auto" class="icon plug_disconnected" id="plug_disconnected" width="44"
-            height="44" viewBox="0 0 24 24" stroke-width="2" stroke="red" fill="none"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-            <path d="M20 16l-4 4"></path>
-            <path d="M7 12l5 5l-1.5 1.5a3.536 3.536 0 1 1 -5 -5l1.5 -1.5z"></path>
-            <path d="M17 12l-5 -5l1.5 -1.5a3.536 3.536 0 1 1 5 5l-1.5 1.5z"></path>
-            <path d="M3 21l2.5 -2.5"></path>
-            <path d="M18.5 5.5l2.5 -2.5"></path>
-            <path d="M10 11l-2 2"></path>
-            <path d="M13 14l-2 2"></path>
-            <path d="M16 16l4 4"></path>
-          </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" style="margin-left: auto" class="icon plug_disconnected"
+          id="plug_disconnected" width="44" height="44" viewBox="0 0 24 24" stroke-width="2" stroke="red" fill="none"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+          <path d="M20 16l-4 4"></path>
+          <path d="M7 12l5 5l-1.5 1.5a3.536 3.536 0 1 1 -5 -5l1.5 -1.5z"></path>
+          <path d="M17 12l-5 -5l1.5 -1.5a3.536 3.536 0 1 1 5 5l-1.5 1.5z"></path>
+          <path d="M3 21l2.5 -2.5"></path>
+          <path d="M18.5 5.5l2.5 -2.5"></path>
+          <path d="M10 11l-2 2"></path>
+          <path d="M13 14l-2 2"></path>
+          <path d="M16 16l4 4"></path>
+        </svg>
       </header>
 
       <div class="form_content">
@@ -117,7 +117,7 @@
           <label>Password</label>
           <input type="text" id="password_input">
         </div>
-        
+
 
         <div class="form_group">
           <label>LWT Topic</label>
@@ -131,6 +131,22 @@
           <label>LWT QoS</label>
           <input type="number" min="1" max="3" id="lwt_qos_input" value="1">
         </div>
+
+        <div class="form_group">
+          <label>Keep Alive</label>
+          <input type="number" min="1" max="65535" id="keep_alive_input" value="60">
+        </div>
+
+        <div style="display: flex; align-content: center;">
+          <dm-switch on></dm-switch>
+          <label>Clean Session</label>
+        </div>
+
+        <div style="display: flex; align-content: center;">
+          <dm-switch> asd</dm-switch>
+          <label>Clean Session</label>
+        </div>
+
 
       </div>
 

@@ -37,12 +37,13 @@ const user = new FormInput("user_id_input", DataGenerator.user(), "user_id_outpu
 const client_id = new FormInput("client_id_input", DataGenerator.id(), "client_id_output");
 const password = new FormInput("password_input");
 const lwt_topic = new FormInput("lwt_topic_input", "wi/disconnect"); //auto update topic name?
+const lwt_message = new FormInput("lwt_message_input", "So long, and thanks for all the fish.");
 
 //sub form
 // const subscribe_topic
 
 const subscribe_topic_input: HTMLInputElement = document.getElementById("subscribe_topic_input");
-const lwt_message_input: HTMLInputElement = document.getElementById("lwt_message_input");
+
 const lwt_qos_input: HTMLInputElement = document.getElementById("lwt_qos_input");
 const disconnected_icons = document.querySelectorAll(".plug_disconnected");
 const keep_alive_input: HTMLInputElement = document.getElementById("keep_alive_input");
@@ -96,7 +97,7 @@ const get_client_options = (): IClientOptions => {
         username: `${user.value}`,
         password: `${password.value}`,
         will: {
-            topic: lwt_message_input.value,
+            topic: `${lwt_message.value}`,
             payload: client_id.value + "-" + user.value + ": " + lwt_message_input.value, // The Node.js types complain here expecting a "buffer" type. The Browser version of MQTT.js handles the string fine. I just couldn't get the browser version types working.
             qos: lwt_qos_input.value as mqtt.QoS,
             retain: lwt_retain_val(),

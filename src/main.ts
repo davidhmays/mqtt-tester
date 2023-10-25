@@ -20,73 +20,25 @@ import { IClientOptions } from "mqtt/lib/client";
 import { IClientSubscribeOptions } from "mqtt/lib/client";
 import { ISubscriptionMap } from "mqtt/lib/client";
 
+import * as DataGen from "./modules/data_generator.ts";
+
+import FormInput from "./modules/form_input.ts";
+
 // import mqtt from "mqtt" //Don't import this, or you'll get non working Node version, but useful to turn on to peek at intended types.
 
 import init_custom_elements from "../ui_components/_ui.base/ui.base.ts";
 import DMSwitch from "../ui_components/_ui.base/elements/dm-switch/dm-switch.ts";
 init_custom_elements();
-
 console.log(mqtt);
 let mqtt_client: MqttClient | null = null;
 
 const subscriptions: ISubscriptionMap = {};
 
-const generate_user = () => {
-    var a = [
-        "Impatient",
-        "Blue",
-        "Ugly",
-        "Friendly",
-        "Sunny",
-        "Quick",
-        "Intelligent",
-        "Curious",
-        "Elegant",
-        "Delightful",
-        "Playful",
-        "Vibrant",
-        "Clever",
-        "Lively",
-        "Cozy",
-        "Radiant",
-        "Sparkling",
-        "Adventurous",
-        "Mysterious",
-        "Peaceful",
-    ];
-    var b = [
-        "Banana",
-        "Penguin",
-        "Rock",
-        "Pickle",
-        "Noodle",
-        "Giraffe",
-        "Squirrel",
-        "Sock",
-        "Llama",
-        "Wombat",
-        "Pancake",
-        "Unicorn",
-        "Pajamas",
-        "Bear",
-        "Taco",
-        "Tire",
-        "Lobster",
-        "Pineapple",
-        "Kangaroo",
-        "Beluga",
-    ];
-    var rA = Math.floor(Math.random() * a.length);
-    var rB = Math.floor(Math.random() * b.length);
-    return a[rA] + b[rB];
-};
-const generate_id = (a) => (a ? (a ^ ((Math.random() * 16) >> (a / 4))).toString(16) : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, generate_id));
-
 const user_ui: HTMLDivElement = document.getElementById("user_id");
-user_ui.innerHTML = generate_user();
+user_ui.innerHTML = DataGen.generate_user();
 
 const user_input: HTMLInputElement = document.getElementById("username_input");
-user_input.setAttribute("value", generate_user());
+user_input.setAttribute("value", DataGen.generate_user());
 user_ui.innerHTML = user_input.value;
 user_input.addEventListener("input", (event) => {
     user_ui.innerHTML = event.target.value;
@@ -95,57 +47,7 @@ user_input.addEventListener("input", (event) => {
 // Get the updated value from the input element
 const url_input: HTMLInputElement = document.getElementById("url_input");
 
-class FormInput {
-    public input_element: HTMLInputElement | SVGElement;
-    public target_element: HTMLElement | null;
-    public value: string | boolean | null = null;
-
-    constructor(input_id: string, target_id?: string, initial_value?: string) {
-        this.input_element = document.getElementById(input_id) as HTMLInputElement;
-        this.target_element = target_id ? document.getElementById(target_id) : (null as HTMLElement | null);
-
-        this.update_value(initial_value);
-        this.bind_target();
-    }
-
-    private update_value(input_value: string | boolean | undefined) {
-        if (input_value !== undefined) {
-            if (this.input_element instanceof HTMLElement) {
-                this.value = input_value;
-                this.input_element.value = `${this.value}`;
-            } else if (this.input_element instanceof DMSwitch) {
-                if (input_value === "on" || input_value === true) {
-                    this.value = true;
-                    this.input_element.setAttribute("on", "");
-                } else {
-                    this.value = false;
-                    this.input_element.removeAttribute("on");
-                }
-            }
-
-            if (this.target_element) {
-                this.target_element.textContent = `${this.value}`;
-            }
-        }
-    }
-
-    private bind_target() {
-        if (this.input_element instanceof HTMLInputElement) {
-            this.input_element.addEventListener("input", (event) => {
-                this.update_value((event.target as HTMLInputElement).value);
-            });
-        } else if (this.input_element instanceof DMSwitch) {
-            this.input_element.addEventListener("on", () => {
-                this.update_value(true);
-            });
-            this.input_element.addEventListener("off", () => {
-                this.update_value(false);
-            });
-        }
-    }
-}
-
-const client_id = new FormInput("client_id_input", "client_id_output", generate_id());
+const client_id = new FormInput("client_id_input", "client_id_output", DataGen.generate_id());
 
 const subscribe_topic_input: HTMLInputElement = document.getElementById("subscribe_topic_input");
 const password_input: HTMLInputElement = document.getElementById("password_input");

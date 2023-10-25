@@ -36,13 +36,12 @@ const url = new FormInput("url_input", "mqtt://broker.hivemq.com:8000/mqtt"); //
 const user = new FormInput("user_id_input", DataGenerator.user(), "user_id_output");
 const client_id = new FormInput("client_id_input", DataGenerator.id(), "client_id_output");
 const password = new FormInput("password_input");
+const lwt_topic = new FormInput("lwt_topic_input", "wi/disconnect"); //auto update topic name?
 
 //sub form
 // const subscribe_topic
 
 const subscribe_topic_input: HTMLInputElement = document.getElementById("subscribe_topic_input");
-
-const lwt_topic_input: HTMLInputElement = document.getElementById("lwt_topic_input");
 const lwt_message_input: HTMLInputElement = document.getElementById("lwt_message_input");
 const lwt_qos_input: HTMLInputElement = document.getElementById("lwt_qos_input");
 const disconnected_icons = document.querySelectorAll(".plug_disconnected");
@@ -139,13 +138,12 @@ const connect_to_broker = () => {
             qos: 2 as mqtt.QoS,
         };
 
-        subscriptions[lwt_topic_input.value] = {
+        subscriptions[`${lwt_topic.value}`] = {
             qos: parseInt(lwt_qos_input.value) as mqtt.Qos,
         };
 
         bulk_subscribe();
-        //subscribe("wi/chat");
-        //subscribe(lwt_topic_input.value);
+
         mqtt_client.publish("wi/chat", client_id.value + " has entered the chat.");
     });
 

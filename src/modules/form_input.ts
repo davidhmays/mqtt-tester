@@ -5,7 +5,7 @@ export default class FormInput {
     public target_element: HTMLElement | null;
     public value: string | boolean | null = null;
 
-    constructor(input_id: string, target_id?: string, initial_value?: string) {
+    constructor(input_id: string, initial_value?: string, target_id?: string) {
         this.input_element = document.getElementById(input_id) as HTMLInputElement;
         this.target_element = target_id ? document.getElementById(target_id) : (null as HTMLElement | null);
 

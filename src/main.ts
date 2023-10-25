@@ -29,21 +29,12 @@ init_custom_elements();
 let mqtt_client: MqttClient | null = null;
 const subscriptions: ISubscriptionMap = {};
 
-// const user_ui: HTMLDivElement = document.getElementById("user_id");
-// user_ui.innerHTML = DataGenerator.user();
-
-// const user_input: HTMLInputElement = document.getElementById("username_input");
-// user_input.setAttribute("value", DataGenerator.user());
-// user_ui.innerHTML = user_input.value;
-// user_input.addEventListener("input", (event) => {
-//     user_ui.innerHTML = event.target.value;
-// });
-
 // Get the updated value from the input element
-const url_input: HTMLInputElement = document.getElementById("url_input");
+//const url_input: HTMLInputElement = document.getElementById("url_input");
 
-const user = new FormInput("user_id_input", "user_id_output", DataGenerator.user());
-const client_id = new FormInput("client_id_input", "client_id_output", DataGenerator.id());
+const url = new FormInput("url_input", "mqtt://broker.hivemq.com:8000/mqtt"); //Notice some brokers might expect "ws://, not mqtt:// as this is a websocket connection"
+const user = new FormInput("user_id_input", DataGenerator.user(), "user_id_output");
+const client_id = new FormInput("client_id_input", DataGenerator.id(), "client_id_output");
 
 const subscribe_topic_input: HTMLInputElement = document.getElementById("subscribe_topic_input");
 const password_input: HTMLInputElement = document.getElementById("password_input");
@@ -93,8 +84,7 @@ const subscribe_pane_toggle = () => {
 open_conn_button.addEventListener("click", connect_pane_toggle);
 add_sub_button.addEventListener("click", subscribe_pane_toggle);
 
-const get_client_inputs = (): [string, IClientOptions] => {
-    const url: string = url_input.value;
+const get_client_options = (): IClientOptions => {
     const lwt_retain_val = () => (lwt_retain_input.hasAttribute("on") ? true : false);
     const clean_session_val = () => (clean_session_input.hasAttribute("on") ? true : false);
     // const ssl_val () => ssl_input.hasAttribute("on") ? true: false
@@ -114,7 +104,7 @@ const get_client_inputs = (): [string, IClientOptions] => {
         // certificate based auth?
     };
 
-    return [url, options];
+    return options;
 };
 
 //TODO:Pass in broker and client. Allow swtiching brokers, or from MQTT.js to Paho etc.
@@ -124,8 +114,8 @@ const connect_to_broker = () => {
             "Warning: if you've already connected, refresh the page to use your new settings. Reconnecting otherwise will try over and over. (You'll see the connection logo blinking red and black)"
         );
 
-    const [url, options] = get_client_inputs();
-    mqtt_client = mqtt.connect(url, options);
+    const options = get_client_options();
+    mqtt_client = mqtt.connect(`${url.value}`, options);
 
     mqtt_client.on("connect", () => {
         console.log("connected");

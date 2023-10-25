@@ -35,9 +35,13 @@ const subscriptions: ISubscriptionMap = {};
 const url = new FormInput("url_input", "mqtt://broker.hivemq.com:8000/mqtt"); //Notice some brokers might expect "ws://, not mqtt:// as this is a websocket connection"
 const user = new FormInput("user_id_input", DataGenerator.user(), "user_id_output");
 const client_id = new FormInput("client_id_input", DataGenerator.id(), "client_id_output");
+const password = new FormInput("password_input");
+
+//sub form
+// const subscribe_topic
 
 const subscribe_topic_input: HTMLInputElement = document.getElementById("subscribe_topic_input");
-const password_input: HTMLInputElement = document.getElementById("password_input");
+
 const lwt_topic_input: HTMLInputElement = document.getElementById("lwt_topic_input");
 const lwt_message_input: HTMLInputElement = document.getElementById("lwt_message_input");
 const lwt_qos_input: HTMLInputElement = document.getElementById("lwt_qos_input");
@@ -91,7 +95,7 @@ const get_client_options = (): IClientOptions => {
     const options: IClientOptions = {
         clientId: `${client_id.value}`,
         username: `${user.value}`,
-        password: password_input.value,
+        password: `${password.value}`,
         will: {
             topic: lwt_message_input.value,
             payload: client_id.value + "-" + user.value + ": " + lwt_message_input.value, // The Node.js types complain here expecting a "buffer" type. The Browser version of MQTT.js handles the string fine. I just couldn't get the browser version types working.

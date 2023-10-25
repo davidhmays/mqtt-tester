@@ -5,8 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="/src/style.css">
-  <!-- <script src="/src/mqtt.5.2.1.min.js"></script> -->
-  <!-- <script src="../node_modules/mqtt/dist/mqtt.min.js" ></script> -->
   <script type="module" src="/src/main.ts"></script>
   <title>MQTT Tester</title>
 </head>
@@ -20,7 +18,7 @@
     <header>
       <h1>MQTT Tester</h1>
     </header>
-    <div id="user_id"></div>
+    <div id="user_id_output"></div>
     <div id="client_id_output"></div>
 
 
@@ -110,7 +108,7 @@
 
         <div class="form_group">
           <label>User Name</label>
-          <input type="text" id="username_input">
+          <input type="text" id="user_id_input">
         </div>
 
         <div class="form_group">

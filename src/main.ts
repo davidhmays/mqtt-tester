@@ -19,35 +19,31 @@ import MqttClient from "mqtt/lib/client";
 import { IClientOptions } from "mqtt/lib/client";
 import { IClientSubscribeOptions } from "mqtt/lib/client";
 import { ISubscriptionMap } from "mqtt/lib/client";
-
-import * as DataGen from "./modules/data_generator.ts";
-
+import * as DataGenerator from "./modules/data_generator.ts";
 import FormInput from "./modules/form_input.ts";
-
-// import mqtt from "mqtt" //Don't import this, or you'll get non working Node version, but useful to turn on to peek at intended types.
-
 import init_custom_elements from "../ui_components/_ui.base/ui.base.ts";
-import DMSwitch from "../ui_components/_ui.base/elements/dm-switch/dm-switch.ts";
-init_custom_elements();
-console.log(mqtt);
-let mqtt_client: MqttClient | null = null;
 
+console.log(mqtt);
+init_custom_elements();
+
+let mqtt_client: MqttClient | null = null;
 const subscriptions: ISubscriptionMap = {};
 
-const user_ui: HTMLDivElement = document.getElementById("user_id");
-user_ui.innerHTML = DataGen.generate_user();
+// const user_ui: HTMLDivElement = document.getElementById("user_id");
+// user_ui.innerHTML = DataGenerator.user();
 
-const user_input: HTMLInputElement = document.getElementById("username_input");
-user_input.setAttribute("value", DataGen.generate_user());
-user_ui.innerHTML = user_input.value;
-user_input.addEventListener("input", (event) => {
-    user_ui.innerHTML = event.target.value;
-});
+// const user_input: HTMLInputElement = document.getElementById("username_input");
+// user_input.setAttribute("value", DataGenerator.user());
+// user_ui.innerHTML = user_input.value;
+// user_input.addEventListener("input", (event) => {
+//     user_ui.innerHTML = event.target.value;
+// });
 
 // Get the updated value from the input element
 const url_input: HTMLInputElement = document.getElementById("url_input");
 
-const client_id = new FormInput("client_id_input", "client_id_output", DataGen.generate_id());
+const user = new FormInput("user_id_input", "user_id_output", DataGenerator.user());
+const client_id = new FormInput("client_id_input", "client_id_output", DataGenerator.id());
 
 const subscribe_topic_input: HTMLInputElement = document.getElementById("subscribe_topic_input");
 const password_input: HTMLInputElement = document.getElementById("password_input");
@@ -104,11 +100,11 @@ const get_client_inputs = (): [string, IClientOptions] => {
     // const ssl_val () => ssl_input.hasAttribute("on") ? true: false
     const options: IClientOptions = {
         clientId: `${client_id.value}`,
-        username: user_input.value,
+        username: `${user.value}`,
         password: password_input.value,
         will: {
             topic: lwt_message_input.value,
-            payload: client_id.value + "-" + user_input.value + ": " + lwt_message_input.value, // The Node.js types complain here expecting a "buffer" type. The Browser version of MQTT.js handles the string fine. I just couldn't get the browser version types working.
+            payload: client_id.value + "-" + user.value + ": " + lwt_message_input.value, // The Node.js types complain here expecting a "buffer" type. The Browser version of MQTT.js handles the string fine. I just couldn't get the browser version types working.
             qos: lwt_qos_input.value as mqtt.QoS,
             retain: lwt_retain_val(),
         },

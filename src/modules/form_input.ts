@@ -1,3 +1,5 @@
+import DMSwitch from "../../ui_components/_ui.base/elements/dm-switch/dm-switch";
+
 export default class FormInput {
     public input_element: HTMLInputElement | SVGElement;
     public target_element: HTMLElement | null;

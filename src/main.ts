@@ -23,51 +23,41 @@ import * as DataGenerator from "./modules/data_generator.ts";
 import FormInput from "./modules/form_input.ts";
 import init_custom_elements from "../ui_components/_ui.base/ui.base.ts";
 
-console.log(mqtt);
 init_custom_elements();
-
+console.log(mqtt);
 let mqtt_client: MqttClient | null = null;
 const subscriptions: ISubscriptionMap = {};
 
-// Get the updated value from the input element
-//const url_input: HTMLInputElement = document.getElementById("url_input");
+// Connection form
 const connect_form = document.getElementById("connect_form");
-const url = new FormInput("url_input", "mqtt://broker.hivemq.com:8000/mqtt"); //Notice some brokers might expect "ws://, not mqtt:// as this is a websocket connection"
+const url = new FormInput("url_input", "mqtt://broker.hivemq.com:8000/mqtt"); // Note: some brokers might expect "ws://, not mqtt:// as this is a websocket connection"
 const user = new FormInput("user_id_input", DataGenerator.user(), "user_id_output");
 const client_id = new FormInput("client_id_input", DataGenerator.id(), "client_id_output");
 const password = new FormInput("password_input");
 const lwt_topic = new FormInput("lwt_topic_input", "wi/disconnect"); //auto update topic name?
 const lwt_message = new FormInput("lwt_message_input", "So long, and thanks for all the fish.");
 const lwt_qos = new FormInput("lwt_qos_input");
-const lwt_retain = new FormInput("lwt_retain_input")
-const keep_alive = new FormInput("keep_alive_input", "60")
+const lwt_retain = new FormInput("lwt_retain_input");
+const keep_alive = new FormInput("keep_alive_input", "60");
+const clean_session = new FormInput("clean_session_input");
+const open_conn_button: HTMLAnchorElement = document.getElementById("open_connection");
 
-
-
-//sub form
-// const subscribe_topic
+// Subscription form
 const subscribe_form = document.getElementById("subscribe_form");
-const subscribe_topic = new FormInput("subscribe_topic_input")
-
+const subscribe_topic = new FormInput("subscribe_topic_input");
 
 const disconnected_icons = document.querySelectorAll(".plug_disconnected");
-
-
-const clean_session_input: SVGElement = document.getElementById("clean_session_input");
 
 // const ssl_input: SVGElement = document.getElementById("ssl_input");
 
 // const get_id_button = document.querySelector("#get_id")
 // get_id_button.addEventListener("click", function () { window.open("https://www.hivemq.com/demos/websocket-client", "_blank") })
 
-const open_conn_button: HTMLAnchorElement = document.getElementById("open_connection");
 const add_sub_button: HTMLAnchorElement = document.getElementById("add_subscription");
 const subscribe_btn: HTMLButtonElement = document.getElementById("subscribe_btn");
 
 // TODO: add topic to subscriptions. Or sub individually.
 subscribe_btn.addEventListener("click", () => subscribe(subscribe_topic.value));
-
-
 
 const connected_icons = document.querySelectorAll(".check_circle");
 
@@ -94,10 +84,14 @@ const subscribe_pane_toggle = () => {
 open_conn_button.addEventListener("click", connect_pane_toggle);
 add_sub_button.addEventListener("click", subscribe_pane_toggle);
 
-const get_client_options = (): IClientOptions => {
-    const clean_session_val = () => (clean_session_input.hasAttribute("on") ? true : false);
-    // const ssl_val () => ssl_input.hasAttribute("on") ? true: false
-    const options: IClientOptions = {
+//TODO:Pass in broker and client. Allow swtiching brokers, or from MQTT.js to Paho etc.
+const connect_to_broker = () => {
+    mqtt_client &&
+        alert(
+            "Warning: if you've already connected, refresh the page to use your new settings. Reconnecting otherwise will try over and over. (You'll see the connection logo blinking red and black)"
+        );
+
+    const client_options: IClientOptions = {
         clientId: `${client_id.value}`,
         username: `${user.value}`,
         password: `${password.value}`,
@@ -108,23 +102,12 @@ const get_client_options = (): IClientOptions => {
             retain: lwt_retain.value as boolean,
         },
         keepalive: parseInt(`${keep_alive.value}`) as number,
-        clean: clean_session_val(),
+        clean: clean_session.value as boolean,
         // ssl ?
         // certificate based auth?
     };
 
-    return options;
-};
-
-//TODO:Pass in broker and client. Allow swtiching brokers, or from MQTT.js to Paho etc.
-const connect_to_broker = () => {
-    mqtt_client &&
-        alert(
-            "Warning: if you've already connected, refresh the page to use your new settings. Reconnecting otherwise will try over and over. (You'll see the connection logo blinking red and black)"
-        );
-
-    const options = get_client_options();
-    mqtt_client = mqtt.connect(`${url.value}`, options);
+    mqtt_client = mqtt.connect(`${url.value}`, client_options);
 
     mqtt_client.on("connect", () => {
         console.log("connected");
@@ -150,7 +133,7 @@ const connect_to_broker = () => {
 
         bulk_subscribe();
 
-        mqtt_client.publish("wi/chat", client_id.value + " has entered the chat.");
+        mqtt_client.publish("wi/chat", "| " + user.value + " has entered the chat on client " + client_id.value);
     });
 
     mqtt_client.on("close", () => {

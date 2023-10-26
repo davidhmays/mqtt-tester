@@ -19,6 +19,8 @@ import MqttClient from "mqtt/lib/client";
 import { IClientOptions } from "mqtt/lib/client";
 import { IClientSubscribeOptions } from "mqtt/lib/client";
 import { ISubscriptionMap } from "mqtt/lib/client";
+import ClientOptions from "./modules/client_options.ts";
+
 import * as DataGenerator from "./modules/data_generator.ts";
 import FormInput from "./modules/form_input.ts";
 import init_custom_elements from "../ui_components/_ui.base/ui.base.ts";
@@ -119,21 +121,19 @@ const connect_to_broker = () => {
             "Warning: if you've already connected, refresh the page to use your new settings. Reconnecting otherwise will try over and over. (You'll see the connection logo blinking red and black)"
         );
 
-    const client_options: IClientOptions = {
+    const client_options = new ClientOptions({
         clientId: `${client_id.value}`,
         username: `${user.value}`,
         password: `${password.value}`,
         will: {
             topic: `${lwt_message.value}`,
-            payload: client_id.value + "-" + user.value + ": " + lwt_message_input.value, // The Node.js types complain here expecting a "buffer" type. The Browser version of MQTT.js handles the string fine. I just couldn't get the browser version types working.
+            payload: client_id.value + "-" + user.value + ": " + lwt_message.value, // The Node.js types complain here expecting a "buffer" type. The Browser version of MQTT.js handles the string fine. I just couldn't get the browser version types working.
             qos: lwt_qos.value as mqtt.QoS,
             retain: lwt_retain.value as boolean,
         },
         keepalive: parseInt(`${keep_alive.value}`) as number,
         clean: clean_session.value as boolean,
-        // press spacebar and . to see other client_options
-        // certificate based auth?
-    };
+    });
 
     mqtt_client = mqtt.connect(`${url.value}`, client_options);
 

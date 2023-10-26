@@ -46,8 +46,9 @@ const open_conn_button: HTMLAnchorElement = document.getElementById("open_connec
 const subscribe_form = document.getElementById("subscribe_form");
 const subscribe_topic = new FormInput("subscribe_topic_input");
 
+// Icons
 const disconnected_icons = document.querySelectorAll(".plug_disconnected");
-
+const connected_icons = document.querySelectorAll(".check_circle");
 // const ssl_input: SVGElement = document.getElementById("ssl_input");
 
 // const get_id_button = document.querySelector("#get_id")
@@ -58,8 +59,6 @@ const subscribe_btn: HTMLButtonElement = document.getElementById("subscribe_btn"
 
 // TODO: add topic to subscriptions. Or sub individually.
 subscribe_btn.addEventListener("click", () => subscribe(subscribe_topic.value));
-
-const connected_icons = document.querySelectorAll(".check_circle");
 
 // const disconnect_icon = document.querySelector("#disconnect")
 
@@ -85,6 +84,35 @@ open_conn_button.addEventListener("click", connect_pane_toggle);
 add_sub_button.addEventListener("click", subscribe_pane_toggle);
 
 //TODO:Pass in broker and client. Allow swtiching brokers, or from MQTT.js to Paho etc.
+const refresh_connection_indicators = (connection_state: boolean) => {
+    if (connection_state === true) {
+        console.log("connected");
+        connected_icons.forEach((element) => {
+            if (element.classList.contains("none")) {
+                element.classList.remove("none");
+            }
+        });
+
+        disconnected_icons.forEach((element) => {
+            if (!element.classList.contains("none")) {
+                element.classList.add("none");
+            }
+        });
+    } else if (connection_state === false) {
+        console.log("disconnected");
+        connected_icons.forEach((element) => {
+            if (!element.classList.contains("none")) {
+                element.classList.add("none");
+            }
+        });
+        disconnected_icons.forEach((element) => {
+            if (element.classList.contains("none")) {
+                element.classList.remove("none");
+            }
+        });
+    }
+};
+
 const connect_to_broker = () => {
     mqtt_client &&
         alert(
@@ -110,18 +138,7 @@ const connect_to_broker = () => {
     mqtt_client = mqtt.connect(`${url.value}`, client_options);
 
     mqtt_client.on("connect", () => {
-        console.log("connected");
-        connected_icons.forEach((element) => {
-            if (element.classList.contains("none")) {
-                element.classList.remove("none");
-            }
-        });
-
-        disconnected_icons.forEach((element) => {
-            if (!element.classList.contains("none")) {
-                element.classList.add("none");
-            }
-        });
+        refresh_connection_indicators(true);
 
         subscriptions["wi/chat"] = {
             qos: 2 as mqtt.QoS,
@@ -137,17 +154,7 @@ const connect_to_broker = () => {
     });
 
     mqtt_client.on("close", () => {
-        connected_icons.forEach((element) => {
-            if (!element.classList.contains("none")) {
-                element.classList.add("none");
-            }
-        });
-
-        disconnected_icons.forEach((element) => {
-            if (element.classList.contains("none")) {
-                element.classList.remove("none");
-            }
-        });
+        refresh_connection_indicators(false);
     });
 
     mqtt_client.on("message", (topic, message) => {

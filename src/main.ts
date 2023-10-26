@@ -103,7 +103,7 @@ const connect_to_broker = () => {
         },
         keepalive: parseInt(`${keep_alive.value}`) as number,
         clean: clean_session.value as boolean,
-        // ssl ?
+        // press spacebar and . to see other client_options
         // certificate based auth?
     };
 

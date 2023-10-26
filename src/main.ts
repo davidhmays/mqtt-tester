@@ -39,6 +39,7 @@ const password = new FormInput("password_input");
 const lwt_topic = new FormInput("lwt_topic_input", "wi/disconnect"); //auto update topic name?
 const lwt_message = new FormInput("lwt_message_input", "So long, and thanks for all the fish.");
 const lwt_qos = new FormInput("lwt_qos_input");
+const lwt_retain = new FormInput("lwt_retain_input")
 const keep_alive = new FormInput("keep_alive_input", "60")
 
 
@@ -51,7 +52,7 @@ const subscribe_topic = new FormInput("subscribe_topic_input")
 
 const disconnected_icons = document.querySelectorAll(".plug_disconnected");
 
-const lwt_retain_input: SVGElement = document.getElementById("lwt_retain_input");
+
 const clean_session_input: SVGElement = document.getElementById("clean_session_input");
 
 // const ssl_input: SVGElement = document.getElementById("ssl_input");
@@ -94,7 +95,6 @@ open_conn_button.addEventListener("click", connect_pane_toggle);
 add_sub_button.addEventListener("click", subscribe_pane_toggle);
 
 const get_client_options = (): IClientOptions => {
-    const lwt_retain_val = () => (lwt_retain_input.hasAttribute("on") ? true : false);
     const clean_session_val = () => (clean_session_input.hasAttribute("on") ? true : false);
     // const ssl_val () => ssl_input.hasAttribute("on") ? true: false
     const options: IClientOptions = {
@@ -105,7 +105,7 @@ const get_client_options = (): IClientOptions => {
             topic: `${lwt_message.value}`,
             payload: client_id.value + "-" + user.value + ": " + lwt_message_input.value, // The Node.js types complain here expecting a "buffer" type. The Browser version of MQTT.js handles the string fine. I just couldn't get the browser version types working.
             qos: lwt_qos.value as mqtt.QoS,
-            retain: lwt_retain_val(),
+            retain: lwt_retain.value as boolean,
         },
         keepalive: parseInt(`${keep_alive.value}`) as number,
         clean: clean_session_val(),

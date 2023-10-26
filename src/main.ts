@@ -31,20 +31,22 @@ const subscriptions: ISubscriptionMap = {};
 
 // Get the updated value from the input element
 //const url_input: HTMLInputElement = document.getElementById("url_input");
-
+const connect_form = document.getElementById("connect_form");
 const url = new FormInput("url_input", "mqtt://broker.hivemq.com:8000/mqtt"); //Notice some brokers might expect "ws://, not mqtt:// as this is a websocket connection"
 const user = new FormInput("user_id_input", DataGenerator.user(), "user_id_output");
 const client_id = new FormInput("client_id_input", DataGenerator.id(), "client_id_output");
 const password = new FormInput("password_input");
 const lwt_topic = new FormInput("lwt_topic_input", "wi/disconnect"); //auto update topic name?
 const lwt_message = new FormInput("lwt_message_input", "So long, and thanks for all the fish.");
+const lwt_qos = new FormInput("lwt_qos_input");
+
 
 //sub form
 // const subscribe_topic
+const subscribe_form = document.getElementById("subscribe_form");
+const subscribe_topic = new FormInput("subscribe_topic_input")
 
-const subscribe_topic_input: HTMLInputElement = document.getElementById("subscribe_topic_input");
 
-const lwt_qos_input: HTMLInputElement = document.getElementById("lwt_qos_input");
 const disconnected_icons = document.querySelectorAll(".plug_disconnected");
 const keep_alive_input: HTMLInputElement = document.getElementById("keep_alive_input");
 
@@ -59,10 +61,12 @@ const clean_session_input: SVGElement = document.getElementById("clean_session_i
 const open_conn_button: HTMLAnchorElement = document.getElementById("open_connection");
 const add_sub_button: HTMLAnchorElement = document.getElementById("add_subscription");
 const subscribe_btn: HTMLButtonElement = document.getElementById("subscribe_btn");
-subscribe_btn.addEventListener("click", () => subscribe(subscribe_topic_input.value));
 
-const connect_form = document.getElementById("connect_form");
-const subscribe_form = document.getElementById("subscribe_form");
+// TODO: add topic to subscriptions. Or sub individually.
+subscribe_btn.addEventListener("click", () => subscribe(subscribe_topic.value));
+
+
+
 const connected_icons = document.querySelectorAll(".check_circle");
 
 // const disconnect_icon = document.querySelector("#disconnect")
@@ -99,7 +103,7 @@ const get_client_options = (): IClientOptions => {
         will: {
             topic: `${lwt_message.value}`,
             payload: client_id.value + "-" + user.value + ": " + lwt_message_input.value, // The Node.js types complain here expecting a "buffer" type. The Browser version of MQTT.js handles the string fine. I just couldn't get the browser version types working.
-            qos: lwt_qos_input.value as mqtt.QoS,
+            qos: lwt_qos.value as mqtt.QoS,
             retain: lwt_retain_val(),
         },
         keepalive: parseInt(keep_alive_input.value) as number,

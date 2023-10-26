@@ -39,6 +39,8 @@ const password = new FormInput("password_input");
 const lwt_topic = new FormInput("lwt_topic_input", "wi/disconnect"); //auto update topic name?
 const lwt_message = new FormInput("lwt_message_input", "So long, and thanks for all the fish.");
 const lwt_qos = new FormInput("lwt_qos_input");
+const keep_alive = new FormInput("keep_alive_input", "60")
+
 
 
 //sub form
@@ -48,7 +50,6 @@ const subscribe_topic = new FormInput("subscribe_topic_input")
 
 
 const disconnected_icons = document.querySelectorAll(".plug_disconnected");
-const keep_alive_input: HTMLInputElement = document.getElementById("keep_alive_input");
 
 const lwt_retain_input: SVGElement = document.getElementById("lwt_retain_input");
 const clean_session_input: SVGElement = document.getElementById("clean_session_input");
@@ -106,7 +107,7 @@ const get_client_options = (): IClientOptions => {
             qos: lwt_qos.value as mqtt.QoS,
             retain: lwt_retain_val(),
         },
-        keepalive: parseInt(keep_alive_input.value) as number,
+        keepalive: parseInt(`${keep_alive.value}`) as number,
         clean: clean_session_val(),
         // ssl ?
         // certificate based auth?

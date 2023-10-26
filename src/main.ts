@@ -16,10 +16,10 @@
 
 import * as mqtt from "mqtt/dist/mqtt.min";
 import MqttClient from "mqtt/lib/client";
-import { IClientOptions } from "mqtt/lib/client";
-import { IClientSubscribeOptions } from "mqtt/lib/client";
 import { ISubscriptionMap } from "mqtt/lib/client";
+import { IClientSubscribeOptions } from "mqtt/lib/client";
 import ClientOptions from "./modules/client_options.ts";
+import ClientSubscribeOptions from "./modules/client_subscription_options.ts";
 
 import * as DataGenerator from "./modules/data_generator.ts";
 import FormInput from "./modules/form_input.ts";
@@ -28,7 +28,7 @@ import init_custom_elements from "../ui_components/_ui.base/ui.base.ts";
 init_custom_elements();
 console.log(mqtt);
 let mqtt_client: MqttClient | null = null;
-const subscriptions: ISubscriptionMap = {};
+const subscriptions_map: ISubscriptionMap = {};
 
 // Connection form
 const connect_form = document.getElementById("connect_form");
@@ -173,9 +173,24 @@ const single_subscribe = (topic: string, qos: mqtt.QoS) => {
     };
 };
 
-const bulk_subscribe = () => {
+function subscribe(topics: string[] | string, options: IClientSubscribeOptions ):void
+function subscribe(topics: ISubscriptionMap):void
+function subscribe(topics: ISubscriptionMap | string[] | string, options?: IClientSubscribeOptions) {
     // This bulk subscribes to the subscriptions: ISubscriptionMap, but you can also subscribe individually as well!
-    mqtt_client.subscribe(subscriptions, (err, granted) => {
+    let to_subscribe: ISubscriptionMap | string[] = undefined;
+
+    if (typeof topics === "string") {
+        topics = [topics]
+        for (const topic of topics) {
+            subscriptions_map[topic] = options!
+            console.log(subscriptions_map);
+        }
+    } else {
+        // This case should catch the subscriptions map being input.
+
+    }
+
+    mqtt_client.subscribe(to_subscribe, options, (err, granted) => {
         if (err) {
             console.error("Error subscribing to topics:", err);
         } else {
@@ -202,4 +217,4 @@ const bulk_subscribe = () => {
             }
         }
     });
-};
+}

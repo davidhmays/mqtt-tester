@@ -188,10 +188,9 @@ const update_subscription_map = (subscription_map: ISubscriptionMap, topics?: IS
 
 const refresh_dom_subscriptions = (subscription_map: ISubscriptionMap) => {
     const tree = map_to_tree(subscription_map);
+    renderTree(tree, document.getElementById("sub_list"));
 
-
-    
-    // map_print(tree); // for debugging tree structure.
+    map_print(tree); // for debugging tree structure.
 };
 
 function subscribe(topics: string[] | string, options: IClientSubscribeOptions): void;
@@ -209,4 +208,19 @@ function subscribe(topics: ISubscriptionMap | string[] | string, options?: IClie
             refresh_dom_subscriptions(subscription_map);
         }
     });
+}
+
+function renderTree(tree, container) {
+    const list = document.createElement(tree === "ol" ? "ol" : "ul");
+    container.appendChild(list);
+
+    for (const [key, value] of tree) {
+        const listItem = document.createElement("li");
+        listItem.textContent = key;
+        list.appendChild(listItem);
+
+        if (value instanceof Map) {
+            renderTree(value, listItem);
+        }
+    }
 }

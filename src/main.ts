@@ -29,7 +29,7 @@ import SubscriptionMap from "./modules/SubscriptionMap.ts";
 init_custom_elements();
 console.log(mqtt);
 let mqtt_client: MqttClient | null = null;
-const subscription_map: ISubscriptionMap = {};
+const subscription_map = new SubscriptionMap({});
 
 // Connection form
 const connect_form = document.getElementById("connect_form");
@@ -141,15 +141,15 @@ const connect_to_broker = () => {
     mqtt_client.on("connect", () => {
         refresh_connection_indicators(true);
 
-        subscriptions["wi/chat"] = {
+        subscription_map["wi/chat"] = {
             qos: 2 as mqtt.QoS,
         };
 
-        subscriptions[`${lwt_topic.value}`] = {
-            qos: parseInt(lwt_qos_input.value) as mqtt.Qos,
+        subscription_map[`${lwt_topic.value}`] = {
+            qos: parseInt(`${lwt_qos.value}`) as mqtt.Qos,
         };
 
-        bulk_subscribe();
+        subscribe(subscription_map);
 
         mqtt_client.publish("wi/chat", "| " + user.value + " has entered the chat on client " + client_id.value);
     });
@@ -167,58 +167,53 @@ const connect_to_broker = () => {
 
 const connect_btn: HTMLButtonElement = document.getElementById("connect_btn");
 connect_btn.addEventListener("click", connect_to_broker);
+const is_subscription_map = (input: any): input is ISubscriptionMap => typeof input === "object" && !Array.isArray(input);
 
-const single_subscribe = (topic: string, qos: mqtt.QoS) => {
-    subscriptions[topic] = {
-        qos: qos,
-    };
+const update_subscription_map = (subscription_map: ISubscriptionMap, topics?: ISubscriptionMap | string[], options?: IClientSubscribeOptions) => {
+    if (Array.isArray(topics)) {
+        for (const topic of topics) {
+            subscription_map[topic] = options!;
+        }
+    } else if (is_subscription_map(topics)) {
+        for (const topic in topics) {
+            subscription_map[topic] = topics[topic];
+        }
+    }
 };
 
+const refresh_dom_subscriptions = (subscription_map: ISubscriptionMap) => {
+    const dom_subscriptions = document.getElementById("sub_list");
 
-const is_subscription_map = (input: any): input is ISubscriptionMap => typeof input === 'object' && !Array.isArray(input);
+    for (const topic in subscription_map) {
+        const existing_dom_subscription = dom_subscriptions.querySelector(`li[data-mqtt-topic="${topic}"]`);
 
+        if (!existing_dom_subscription) {
+            const dom_sub = document.createElement("li");
+            dom_sub.setAttribute("data-mqtt-topic", topic);
 
-function subscribe(topics: string[] | string, options: IClientSubscribeOptions ):void
-function subscribe(topics: ISubscriptionMap):void
-function subscribe(topics: ISubscriptionMap | string[] | string, options?: IClientSubscribeOptions) {
+            const anchor = document.createElement("a");
+            anchor.href = "#";
+            anchor.textContent = topic;
+
+            dom_sub.appendChild(anchor);
+            dom_subscriptions.appendChild(dom_sub);
+        }
+    }
+};
+
+function subscribe(topics: string[], options: IClientSubscribeOptions): void;
+function subscribe(topics: ISubscriptionMap): void;
+function subscribe(topics: ISubscriptionMap | string[], options?: IClientSubscribeOptions) {
     // This bulk subscribes to the subscriptions: ISubscriptionMap, but you can also subscribe individually as well!
     // let to_subscribe: ISubscriptionMap | string[] = undefined;
 
-    if (Array.isArray(topics)) {
-        for (const topic of topics) {
-            subscription_map[topic] = options!
-        }
-    } else if (is_subscription_map(topics))  {
-        for (const topic in topics) {
-            subscription_map[topic] = topics[topic]
-        } 
-    }
-
-    mqtt_client.subscribe(to_subscribe, options, (err, granted) => {
+    mqtt_client.subscribe(topics, options, (err, granted) => {
         if (err) {
             console.error("Error subscribing to topics:", err);
         } else {
             console.log("Subscribed to topics:", granted);
-
-            const dom_subscriptions = document.getElementById("sub_list");
-
-            for (const topic in subscriptions) {
-                const existing_dom_subscription = dom_subscriptions.querySelector(`li[data-mqtt-topic="${topic}"]`);
-
-                if (!existing_dom_subscription) {
-                    const dom_sub = document.createElement("li");
-                    dom_sub.setAttribute("data-mqtt-topic", topic);
-
-                    const anchor = document.createElement("a");
-                    anchor.href = "#";
-                    anchor.textContent = topic;
-
-                    dom_sub.appendChild(anchor);
-                    dom_subscriptions.appendChild(dom_sub);
-
-                    // now close the subscribe box? no might want to add others.
-                }
-            }
+            update_subscription_map(subscription_map, topics, options);
+            refresh_dom_subscriptions(subscription_map);
         }
     });
 }

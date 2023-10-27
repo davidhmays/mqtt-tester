@@ -26,6 +26,7 @@ import * as DataGenerator from "./modules/DataGenerator.ts";
 import FormInput from "./modules/FormInput.ts";
 import init_custom_elements from "../ui_components/_ui.base/ui.base.ts";
 import SubscriptionMap from "./modules/SubscriptionMap.ts";
+import { map_print, map_to_tree } from "./modules/MapHelpers.ts";
 
 init_custom_elements();
 console.log(mqtt);
@@ -47,7 +48,7 @@ const lwt_qos = new FormInput("lwt_qos_input");
 const lwt_retain = new FormInput("lwt_retain_input");
 const keep_alive = new FormInput("keep_alive_input", "60");
 const clean_session = new FormInput("clean_session_input");
-const open_conn_button: HTMLAnchorElement = document.getElementById("open_connection") as HTMLAnchorElement;
+const connect_btn: HTMLButtonElement = document.getElementById("connect_btn")! as HTMLButtonElement;
 
 // Subscription page
 const subscribe_page: HTMLDivElement = document.getElementById("subscribe_page") as HTMLDivElement;
@@ -62,6 +63,7 @@ const connected_icons = document.querySelectorAll(".check_circle");
 
 //Sidebar
 const add_sub_button: HTMLAnchorElement = document.getElementById("add_subscription") as HTMLAnchorElement;
+const open_conn_button: HTMLAnchorElement = document.getElementById("open_connection") as HTMLAnchorElement;
 
 // TODO: add topic to subscriptions. Or sub individually.
 subscribe_btn.addEventListener("click", () => subscribe(`${subscribe_topic.value}`, { qos: parseInt(`${subscribe_qos.value}`) as mqtt.QoS }));
@@ -162,7 +164,6 @@ const connect_to_broker = () => {
     });
 };
 
-const connect_btn: HTMLButtonElement = document.getElementById("connect_btn")! as HTMLButtonElement;
 connect_btn.addEventListener("click", connect_to_broker);
 
 const is_subscription_map = (input: any): input is ISubscriptionMap => typeof input === "object" && !Array.isArray(input);
@@ -186,24 +187,11 @@ const update_subscription_map = (subscription_map: ISubscriptionMap, topics?: IS
 };
 
 const refresh_dom_subscriptions = (subscription_map: ISubscriptionMap) => {
-    //TODO: Create subtopics as a dropdown.
-    const dom_subscriptions = document.getElementById("sub_list");
+    const tree = map_to_tree(subscription_map);
 
-    for (const topic in subscription_map) {
-        const existing_dom_subscription = dom_subscriptions!.querySelector(`li[data-mqtt-topic="${topic}"]`);
 
-        if (!existing_dom_subscription) {
-            const dom_sub = document.createElement("li");
-            dom_sub.setAttribute("data-mqtt-topic", topic);
-
-            const anchor = document.createElement("a");
-            anchor.href = "#";
-            anchor.textContent = topic;
-
-            dom_sub.appendChild(anchor);
-            dom_subscriptions!.appendChild(dom_sub);
-        }
-    }
+    
+    // map_print(tree); // for debugging tree structure.
 };
 
 function subscribe(topics: string[] | string, options: IClientSubscribeOptions): void;

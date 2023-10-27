@@ -26,7 +26,7 @@
       <ul>
         <li>
           <h2>Setup</h2>
-          <ul>
+          <ul id="setup_list">
             <li style="display: flex; align-content: center;">
               <a href="#" id="open_connection">Connect</a>
 
@@ -118,7 +118,7 @@
 
         <div class="form_group">
           <label>Keep Alive</label>
-          <input type="number" min="1" max="65535" id="keep_alive_input" autocomplete="off">
+          <input type="number" min="1" max="65535" id="keep_alive_input" autocomplete="off" oninput="(validity.valid)||(value='');">
         </div>
 
         <div class="form_group">
@@ -131,7 +131,7 @@
         </div>
         <div class="form_group">
           <label>LWT QoS</label>
-          <input type="number" min="1" max="3" id="lwt_qos_input" value="1" autocomplete="off">
+          <input type="number" id="lwt_qos_input" autocomplete="off"  min="0" max="2" oninput="(validity.valid)||(value='');">
         </div>
 
         <div style="display: flex; align-content: center;">
@@ -177,7 +177,7 @@
 
         <div class="form_group">
           <label>QoS</label>
-          <input type="number" id="subscribe_qos_input" autocomplete="off">
+          <input type="number" id="subscribe_qos_input" autocomplete="off" min="0" max="2" oninput="(validity.valid)||(value='');">
         </div>
       </div>
 

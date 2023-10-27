@@ -232,7 +232,9 @@ form {
   font-size: 9px;
 }
 
-
+nav > ul > li, #sub_list > li, #setup_list > li {
+  margin-left: 0 
+}
 
 .page {
   display: grid;

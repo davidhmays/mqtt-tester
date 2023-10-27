@@ -55,6 +55,7 @@ export default class ClientOptions implements IClientOptions {
     ////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////
     // Dave Mays: THESE BREAK CONNECTION (Might be browser vs node issue?)
+    // These all seeem to be able to be passed as part of the "url" though.
     //
     // port?: number; // PORT BREAKS CONNECTION
     // hostname?: string; //HOSTNAME BREAKS CONNECTION

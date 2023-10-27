@@ -18,17 +18,18 @@ import * as mqtt from "mqtt/dist/mqtt.min";
 import MqttClient from "mqtt/lib/client";
 import { ISubscriptionMap } from "mqtt/lib/client";
 import { IClientSubscribeOptions } from "mqtt/lib/client";
-import ClientOptions from "./modules/client_options.ts";
-import ClientSubscribeOptions from "./modules/client_subscription_options.ts";
+import ClientOptions from "./modules/ClientOptions.ts";
+import ClientSubscribeOptions from "./modules/ClientSubscribeOptions.ts";
 
-import * as DataGenerator from "./modules/data_generator.ts";
-import FormInput from "./modules/form_input.ts";
+import * as DataGenerator from "./modules/DataGenerator.ts";
+import FormInput from "./modules/FormInput.ts";
 import init_custom_elements from "../ui_components/_ui.base/ui.base.ts";
+import SubscriptionMap from "./modules/SubscriptionMap.ts";
 
 init_custom_elements();
 console.log(mqtt);
 let mqtt_client: MqttClient | null = null;
-const subscriptions_map: ISubscriptionMap = {};
+const subscription_map: ISubscriptionMap = {};
 
 // Connection form
 const connect_form = document.getElementById("connect_form");
@@ -173,21 +174,24 @@ const single_subscribe = (topic: string, qos: mqtt.QoS) => {
     };
 };
 
+
+const is_subscription_map = (input: any): input is ISubscriptionMap => typeof input === 'object' && !Array.isArray(input);
+
+
 function subscribe(topics: string[] | string, options: IClientSubscribeOptions ):void
 function subscribe(topics: ISubscriptionMap):void
 function subscribe(topics: ISubscriptionMap | string[] | string, options?: IClientSubscribeOptions) {
     // This bulk subscribes to the subscriptions: ISubscriptionMap, but you can also subscribe individually as well!
-    let to_subscribe: ISubscriptionMap | string[] = undefined;
+    // let to_subscribe: ISubscriptionMap | string[] = undefined;
 
-    if (typeof topics === "string") {
-        topics = [topics]
+    if (Array.isArray(topics)) {
         for (const topic of topics) {
-            subscriptions_map[topic] = options!
-            console.log(subscriptions_map);
+            subscription_map[topic] = options!
         }
-    } else {
-        // This case should catch the subscriptions map being input.
-
+    } else if (is_subscription_map(topics))  {
+        for (const topic in topics) {
+            subscription_map[topic] = topics[topic]
+        } 
     }
 
     mqtt_client.subscribe(to_subscribe, options, (err, granted) => {

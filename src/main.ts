@@ -17,6 +17,7 @@
 import * as mqtt from "mqtt/dist/mqtt.min";
 import MqttClient from "mqtt/lib/client";
 import { ISubscriptionMap } from "mqtt/lib/client";
+import { IClientOptions } from "mqtt/lib/client";
 import { IClientSubscribeOptions } from "mqtt/lib/client";
 import ClientOptions from "./modules/ClientOptions.ts";
 import ClientSubscribeOptions from "./modules/ClientSubscribeOptions.ts";
@@ -29,10 +30,12 @@ import SubscriptionMap from "./modules/SubscriptionMap.ts";
 init_custom_elements();
 console.log(mqtt);
 let mqtt_client: MqttClient | null = null;
-const subscription_map = new SubscriptionMap({});
+
+// Current subscriptions store
+const subscription_map: ISubscriptionMap = {};
 
 // Connection form
-const connect_form = document.getElementById("connect_form");
+const connect_form: HTMLFormElement = document.getElementById("connect_form") as HTMLFormElement;
 const url = new FormInput("url_input", "mqtt://broker.hivemq.com:8000/mqtt"); // Note: some brokers might expect "ws://, not mqtt:// as this is a websocket connection"
 const user = new FormInput("user_id_input", DataGenerator.user(), "user_id_output");
 const client_id = new FormInput("client_id_input", DataGenerator.id(), "client_id_output");
@@ -43,48 +46,41 @@ const lwt_qos = new FormInput("lwt_qos_input");
 const lwt_retain = new FormInput("lwt_retain_input");
 const keep_alive = new FormInput("keep_alive_input", "60");
 const clean_session = new FormInput("clean_session_input");
-const open_conn_button: HTMLAnchorElement = document.getElementById("open_connection");
+const open_conn_button: HTMLAnchorElement = document.getElementById("open_connection") as HTMLAnchorElement;
 
 // Subscription form
-const subscribe_form = document.getElementById("subscribe_form");
+const subscribe_form: HTMLFormElement = document.getElementById("subscribe_form") as HTMLFormElement;
 const subscribe_topic = new FormInput("subscribe_topic_input");
+const subscribe_btn: HTMLButtonElement = document.getElementById("subscribe_btn") as HTMLButtonElement;
 
 // Icons
 const disconnected_icons = document.querySelectorAll(".plug_disconnected");
 const connected_icons = document.querySelectorAll(".check_circle");
-// const ssl_input: SVGElement = document.getElementById("ssl_input");
 
-// const get_id_button = document.querySelector("#get_id")
-// get_id_button.addEventListener("click", function () { window.open("https://www.hivemq.com/demos/websocket-client", "_blank") })
-
-const add_sub_button: HTMLAnchorElement = document.getElementById("add_subscription");
-const subscribe_btn: HTMLButtonElement = document.getElementById("subscribe_btn");
+//Sidebar
+const add_sub_button: HTMLAnchorElement = document.getElementById("add_subscription") as HTMLAnchorElement;
 
 // TODO: add topic to subscriptions. Or sub individually.
-subscribe_btn.addEventListener("click", () => subscribe(subscribe_topic.value));
+subscribe_btn.addEventListener("click", () => subscribe(`${subscribe_topic.value}`));
 
 // const disconnect_icon = document.querySelector("#disconnect")
 
-const connect_pane_toggle = () => {
-    if (connect_form.hasAttribute("hidden")) {
-        connect_form.removeAttribute("hidden");
-        subscribe_form.setAttribute("hidden", "");
-    } else {
-        connect_form.setAttribute("hidden", "");
+const show = (to_show: HTMLElement | string) => {
+    let id = "";
+    if (typeof to_show === "string") {
+        id = to_show;
+    } else if (to_show instanceof HTMLElement) {
+        id = to_show.id;
     }
+    const hideable_elements = document.querySelectorAll(".hideable:not(#" + id + ")");
+    hideable_elements.forEach((element) => {
+        element.classList.add("none");
+    });
+    document.getElementById(id)?.classList.remove("none");
 };
 
-const subscribe_pane_toggle = () => {
-    if (subscribe_form.hasAttribute("hidden")) {
-        subscribe_form.removeAttribute("hidden");
-        connect_form.setAttribute("hidden", "");
-    } else {
-        subscribe_form.setAttribute("hidden", "");
-    }
-};
-
-open_conn_button.addEventListener("click", connect_pane_toggle);
-add_sub_button.addEventListener("click", subscribe_pane_toggle);
+open_conn_button.addEventListener("click", () => show(connect_form));
+add_sub_button.addEventListener("click", () => show(subscribe_form));
 
 //TODO:Pass in broker and client. Allow swtiching brokers, or from MQTT.js to Paho etc.
 const refresh_connection_indicators = (connection_state: boolean) => {
@@ -122,7 +118,7 @@ const connect_to_broker = () => {
             "Warning: if you've already connected, refresh the page to use your new settings. Reconnecting otherwise will try over and over. (You'll see the connection logo blinking red and black)"
         );
 
-    const client_options = new ClientOptions({
+    const client_options: IClientOptions = {
         clientId: `${client_id.value}`,
         username: `${user.value}`,
         password: `${password.value}`,
@@ -134,11 +130,11 @@ const connect_to_broker = () => {
         },
         keepalive: parseInt(`${keep_alive.value}`) as number,
         clean: clean_session.value as boolean,
-    });
+    };
 
     mqtt_client = mqtt.connect(`${url.value}`, client_options);
 
-    mqtt_client.on("connect", () => {
+    mqtt_client!.on("connect", () => {
         refresh_connection_indicators(true);
 
         subscription_map["wi/chat"] = {
@@ -151,22 +147,21 @@ const connect_to_broker = () => {
 
         subscribe(subscription_map);
 
-        mqtt_client.publish("wi/chat", "| " + user.value + " has entered the chat on client " + client_id.value);
+        mqtt_client!.publish("wi/chat", "| " + user.value + " has entered the chat on client " + client_id.value);
     });
 
-    mqtt_client.on("close", () => {
+    mqtt_client!.on("close", () => {
         refresh_connection_indicators(false);
     });
 
-    mqtt_client.on("message", (topic, message) => {
-        // message is Buffer
+    mqtt_client!.on("message", (topic, message) => {
         console.log(topic.toString() + " " + message.toString());
-        // mqtt_client.end();
     });
 };
 
-const connect_btn: HTMLButtonElement = document.getElementById("connect_btn");
+const connect_btn: HTMLButtonElement = document.getElementById("connect_btn")! as HTMLButtonElement;
 connect_btn.addEventListener("click", connect_to_broker);
+
 const is_subscription_map = (input: any): input is ISubscriptionMap => typeof input === "object" && !Array.isArray(input);
 
 const update_subscription_map = (subscription_map: ISubscriptionMap, topics?: ISubscriptionMap | string[], options?: IClientSubscribeOptions) => {
@@ -182,10 +177,11 @@ const update_subscription_map = (subscription_map: ISubscriptionMap, topics?: IS
 };
 
 const refresh_dom_subscriptions = (subscription_map: ISubscriptionMap) => {
+    //TODO: Create subtopics as a dropdown.
     const dom_subscriptions = document.getElementById("sub_list");
 
     for (const topic in subscription_map) {
-        const existing_dom_subscription = dom_subscriptions.querySelector(`li[data-mqtt-topic="${topic}"]`);
+        const existing_dom_subscription = dom_subscriptions!.querySelector(`li[data-mqtt-topic="${topic}"]`);
 
         if (!existing_dom_subscription) {
             const dom_sub = document.createElement("li");
@@ -196,7 +192,7 @@ const refresh_dom_subscriptions = (subscription_map: ISubscriptionMap) => {
             anchor.textContent = topic;
 
             dom_sub.appendChild(anchor);
-            dom_subscriptions.appendChild(dom_sub);
+            dom_subscriptions!.appendChild(dom_sub);
         }
     }
 };
@@ -207,7 +203,7 @@ function subscribe(topics: ISubscriptionMap | string[], options?: IClientSubscri
     // This bulk subscribes to the subscriptions: ISubscriptionMap, but you can also subscribe individually as well!
     // let to_subscribe: ISubscriptionMap | string[] = undefined;
 
-    mqtt_client.subscribe(topics, options, (err, granted) => {
+    mqtt_client!.subscribe(topics, options, (err, granted) => {
         if (err) {
             console.error("Error subscribing to topics:", err);
         } else {

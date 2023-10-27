@@ -69,7 +69,7 @@
   </aside>
 
   <div class="content">
-    <form action="" id="connect_form" class="card" onsubmit="return false;">
+    <form action="" id="connect_form" class="card hideable" onsubmit="return false;">
       <header>
         <h1>Connect</h1>
         <svg xmlns="http://www.w3.org/2000/svg" id="checkmark" class="none icon check_circle" width="44" height="44"
@@ -98,40 +98,40 @@
       <div class="form_content">
         <div class="form_group">
           <label for="">URL</label>
-          <input type="text" id="url_input" autocomplete="false">
+          <input type="text" id="url_input" autocomplete="off">
         </div>
 
         <div class="form_group">
           <label>Client Id</label>
-          <input type="text" id="client_id_input" autocomplete="false">
+          <input type="text" id="client_id_input" autocomplete="off">
         </div>
 
         <div class="form_group">
           <label>User Name</label>
-          <input type="text" id="user_id_input" autocomplete="false">
+          <input type="text" id="user_id_input" autocomplete="off">
         </div>
 
         <div class="form_group">
           <label>Password</label>
-          <input type="text" id="password_input" autocomplete="false">
+          <input type="text" id="password_input" autocomplete="off">
         </div>
 
         <div class="form_group">
           <label>Keep Alive</label>
-          <input type="number" min="1" max="65535" id="keep_alive_input" autocomplete="false">
+          <input type="number" min="1" max="65535" id="keep_alive_input" autocomplete="off">
         </div>
 
         <div class="form_group">
           <label>LWT Topic</label>
-          <input type="text" id="lwt_topic_input" autocomplete="false">
+          <input type="text" id="lwt_topic_input" autocomplete="off">
         </div>
         <div class="form_group">
           <label>LWT Message</label>
-          <input type="text" id="lwt_message_input" autocomplete="false">
+          <input type="text" id="lwt_message_input" autocomplete="off">
         </div>
         <div class="form_group">
           <label>LWT QoS</label>
-          <input type="number" min="1" max="3" id="lwt_qos_input" value="1" autocomplete="false">
+          <input type="number" min="1" max="3" id="lwt_qos_input" value="1" autocomplete="off">
         </div>
 
         <div style="display: flex; align-content: center;">
@@ -162,7 +162,7 @@
       </footer>
     </form>
 
-    <form hidden action="" id="subscribe_form" class="card" onsubmit="return false;">
+    <form action="" id="subscribe_form" class="card hideable none" onsubmit="return false;">
       <header>
         <h1>Subscribe</h1>
       </header>
@@ -170,12 +170,12 @@
       <div class="subscribe_form_content">
         <div class="form_group">
           <label for="">Topic</label>
-          <input type="text" id="subscribe_topic_input" autocomplete="false">
+          <input type="text" id="subscribe_topic_input" autocomplete="off">
         </div>
 
         <div class="form_group">
           <label>QoS</label>
-          <input type="number" id="qos_input" autocomplete="false">
+          <input type="number" id="qos_input" autocomplete="off">
         </div>
       </div>
 

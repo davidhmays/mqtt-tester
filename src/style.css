@@ -199,7 +199,7 @@ form {
 } */
 
 #qos_input {
-  width: 12ch;
+  width: 6ch;
 }
 
 #connect_form,
@@ -238,4 +238,8 @@ form {
 
 #client_id_output {
   font-size: 9px;
+}
+
+.none {
+  display: none;
 }

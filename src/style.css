@@ -150,15 +150,7 @@ dm-switch {
   box-shadow: -8px 8px black;
 }
 
-.content {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto;
-  grid-auto-rows: auto;
-  padding: 32px;
-  gap: 32px;
-  overflow: auto;
-}
+
 
 .form_content {
   display: flex;
@@ -198,7 +190,7 @@ form {
     width: 100%;
 } */
 
-#qos_input {
+#subscribe_qos_input {
   width: 6ch;
 }
 
@@ -238,6 +230,18 @@ form {
 
 #client_id_output {
   font-size: 9px;
+}
+
+
+
+.page {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+  grid-auto-rows: auto;
+  padding: 32px;
+  gap: 32px;
+  overflow: auto;
 }
 
 .none {

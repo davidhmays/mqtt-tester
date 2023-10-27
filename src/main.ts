@@ -34,7 +34,8 @@ let mqtt_client: MqttClient | null = null;
 // Current subscriptions store
 const subscription_map: ISubscriptionMap = {};
 
-// Connection form
+// Connection page
+const connect_page: HTMLDivElement = document.getElementById("connect_page") as HTMLDivElement;
 const connect_form: HTMLFormElement = document.getElementById("connect_form") as HTMLFormElement;
 const url = new FormInput("url_input", "mqtt://broker.hivemq.com:8000/mqtt"); // Note: some brokers might expect "ws://, not mqtt:// as this is a websocket connection"
 const user = new FormInput("user_id_input", DataGenerator.user(), "user_id_output");
@@ -48,9 +49,11 @@ const keep_alive = new FormInput("keep_alive_input", "60");
 const clean_session = new FormInput("clean_session_input");
 const open_conn_button: HTMLAnchorElement = document.getElementById("open_connection") as HTMLAnchorElement;
 
-// Subscription form
+// Subscription page
+const subscribe_page: HTMLDivElement = document.getElementById("subscribe_page") as HTMLDivElement;
 const subscribe_form: HTMLFormElement = document.getElementById("subscribe_form") as HTMLFormElement;
 const subscribe_topic = new FormInput("subscribe_topic_input");
+const subscribe_qos = new FormInput("subscribe_qos_input");
 const subscribe_btn: HTMLButtonElement = document.getElementById("subscribe_btn") as HTMLButtonElement;
 
 // Icons
@@ -61,7 +64,7 @@ const connected_icons = document.querySelectorAll(".check_circle");
 const add_sub_button: HTMLAnchorElement = document.getElementById("add_subscription") as HTMLAnchorElement;
 
 // TODO: add topic to subscriptions. Or sub individually.
-subscribe_btn.addEventListener("click", () => subscribe(`${subscribe_topic.value}`));
+subscribe_btn.addEventListener("click", () => subscribe(`${subscribe_topic.value}`, { qos: parseInt(`${subscribe_qos.value}`) as mqtt.QoS }));
 
 // const disconnect_icon = document.querySelector("#disconnect")
 
@@ -72,15 +75,15 @@ const show = (to_show: HTMLElement | string) => {
     } else if (to_show instanceof HTMLElement) {
         id = to_show.id;
     }
-    const hideable_elements = document.querySelectorAll(".hideable:not(#" + id + ")");
-    hideable_elements.forEach((element) => {
+    const pages = document.querySelectorAll(".page:not(#" + id + ")");
+    pages.forEach((element) => {
         element.classList.add("none");
     });
     document.getElementById(id)?.classList.remove("none");
 };
 
-open_conn_button.addEventListener("click", () => show(connect_form));
-add_sub_button.addEventListener("click", () => show(subscribe_form));
+open_conn_button.addEventListener("click", () => show(connect_page));
+add_sub_button.addEventListener("click", () => show(subscribe_page));
 
 //TODO:Pass in broker and client. Allow swtiching brokers, or from MQTT.js to Paho etc.
 const refresh_connection_indicators = (connection_state: boolean) => {
@@ -165,10 +168,16 @@ connect_btn.addEventListener("click", connect_to_broker);
 const is_subscription_map = (input: any): input is ISubscriptionMap => typeof input === "object" && !Array.isArray(input);
 
 const update_subscription_map = (subscription_map: ISubscriptionMap, topics?: ISubscriptionMap | string[], options?: IClientSubscribeOptions) => {
+    // If topic is single string:
+    if (typeof topics === "string") {
+        subscription_map[topics] = options!;
+    }
+    // If topic is string[] array:
     if (Array.isArray(topics)) {
         for (const topic of topics) {
             subscription_map[topic] = options!;
         }
+        // If topic is a subscription map:
     } else if (is_subscription_map(topics)) {
         for (const topic in topics) {
             subscription_map[topic] = topics[topic];
@@ -197,9 +206,9 @@ const refresh_dom_subscriptions = (subscription_map: ISubscriptionMap) => {
     }
 };
 
-function subscribe(topics: string[], options: IClientSubscribeOptions): void;
+function subscribe(topics: string[] | string, options: IClientSubscribeOptions): void;
 function subscribe(topics: ISubscriptionMap): void;
-function subscribe(topics: ISubscriptionMap | string[], options?: IClientSubscribeOptions) {
+function subscribe(topics: ISubscriptionMap | string[] | string, options?: IClientSubscribeOptions) {
     // This bulk subscribes to the subscriptions: ISubscriptionMap, but you can also subscribe individually as well!
     // let to_subscribe: ISubscriptionMap | string[] = undefined;
 

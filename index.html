@@ -68,8 +68,8 @@
     </nav>
   </aside>
 
-  <div class="content">
-    <form action="" id="connect_form" class="card hideable" onsubmit="return false;">
+  <div id="connect_page" class="page">
+    <form action="" id="connect_form" class="card" onsubmit="return false;">
       <header>
         <h1>Connect</h1>
         <svg xmlns="http://www.w3.org/2000/svg" id="checkmark" class="none icon check_circle" width="44" height="44"
@@ -161,8 +161,10 @@
         <button id="connect_btn">Connect</button>
       </footer>
     </form>
+  </div>
 
-    <form action="" id="subscribe_form" class="card hideable none" onsubmit="return false;">
+  <div id="subscribe_page" class="page none">
+    <form action="" id="subscribe_form" class="card" onsubmit="return false;">
       <header>
         <h1>Subscribe</h1>
       </header>
@@ -175,7 +177,7 @@
 
         <div class="form_group">
           <label>QoS</label>
-          <input type="number" id="qos_input" autocomplete="off">
+          <input type="number" id="subscribe_qos_input" autocomplete="off">
         </div>
       </div>
 
@@ -183,7 +185,6 @@
         <button id="subscribe_btn">Subscribe</button>
       </footer>
     </form>
-
   </div>
 
 

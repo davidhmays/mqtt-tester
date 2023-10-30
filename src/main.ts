@@ -29,39 +29,15 @@ import UI from "./modules/UI.ts";
 init_custom_elements();
 console.log(mqtt);
 let mqtt_client: MqttClient | null = null;
-
+const subscription_map: ISubscriptionMap = {}; // Current subscriptions store
 const ui = new UI();
 
-// Current subscriptions store
-const subscription_map: ISubscriptionMap = {};
-
-// TODO: add topic to subscriptions. Or sub individually.
 ui.subscribe_btn.addEventListener("click", () => subscribe(`${ui.subscribe_topic.value}`, { qos: parseInt(`${ui.subscribe_qos.value}`) as mqtt.QoS }));
-
-// const disconnect_icon = document.querySelector("#disconnect")
-
-const show = (to_show: HTMLElement | string) => {
-    let id = "";
-    if (typeof to_show === "string") {
-        id = to_show;
-    } else if (to_show instanceof HTMLElement) {
-        id = to_show.id;
-    }
-    const pages = document.querySelectorAll(".page:not(#" + id + ")");
-    pages.forEach((element) => {
-        element.classList.add("none");
-    });
-    document.getElementById(id)?.classList.remove("none");
-};
-
-ui.open_conn_button.addEventListener("click", () => show(ui.connect_page));
-ui.add_sub_button.addEventListener("click", () => show(ui.subscribe_page));
+ui.open_conn_btn.addEventListener("click", () => ui.show(ui.connect_page));
+ui.add_sub_btn.addEventListener("click", () => ui.show(ui.subscribe_page));
 
 const connect_to_broker = () => {
-    mqtt_client &&
-        alert(
-            "Warning: if you've already connected, refresh the page to use your new settings. Reconnecting otherwise will try over and over. (You'll see the connection logo blinking red and black)"
-        );
+    mqtt_client && alert("Warning: if you've already connected, refresh the page to use your new settings. Reconnecting otherwise will try over and over. (You'll see the connection logo blinking red and black)");
 
     const client_options: IClientOptions = {
         clientId: `${ui.client_id.value}`,
@@ -79,9 +55,12 @@ const connect_to_broker = () => {
 
     mqtt_client = mqtt.connect(`${ui.url.value}`, client_options);
 
+    // MQTT EVENTS /////////////////////////////////////////////////
+
     mqtt_client!.on("connect", () => {
         ui.connection_indicators(true);
 
+        // Set a default connection an
         subscription_map["wi/chat"] = {
             qos: 2 as mqtt.QoS,
         };
@@ -91,7 +70,6 @@ const connect_to_broker = () => {
         };
 
         subscribe(subscription_map);
-
         mqtt_client!.publish("wi/chat", "| " + ui.user.value + " has entered the chat on client " + ui.client_id.value);
     });
 

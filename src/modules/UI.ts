@@ -16,7 +16,7 @@ export default class UI {
     public keep_alive = new FormInput("keep_alive_input", "60");
     public clean_session = new FormInput("clean_session_input");
     public connect_btn: HTMLButtonElement = document.getElementById("connect_btn")! as HTMLButtonElement;
-
+    
     // Subscription page
     public subscribe_page: HTMLDivElement = document.getElementById("subscribe_page") as HTMLDivElement;
     public subscribe_form: HTMLFormElement = document.getElementById("subscribe_form") as HTMLFormElement;
@@ -25,8 +25,8 @@ export default class UI {
     public subscribe_btn: HTMLButtonElement = document.getElementById("subscribe_btn") as HTMLButtonElement;
 
     //Sidebar
-    public add_sub_button: HTMLAnchorElement = document.getElementById("add_subscription") as HTMLAnchorElement;
-    public open_conn_button: HTMLAnchorElement = document.getElementById("open_connection") as HTMLAnchorElement;
+    public add_sub_btn: HTMLAnchorElement = document.getElementById("add_subscription") as HTMLAnchorElement;
+    public open_conn_btn: HTMLAnchorElement = document.getElementById("open_connection") as HTMLAnchorElement;
     public subscription_list: HTMLUListElement = document.getElementById("sub_list") as HTMLUListElement;
 
     public connection_indicators = (connection_state: boolean) => {
@@ -60,5 +60,19 @@ export default class UI {
                 }
             });
         }
+    };
+
+    public show = (to_show: HTMLElement | string) => {
+        let id = "";
+        if (typeof to_show === "string") {
+            id = to_show;
+        } else if (to_show instanceof HTMLElement) {
+            id = to_show.id;
+        }
+        const pages = document.querySelectorAll(".page:not(#" + id + ")");
+        pages.forEach((element) => {
+            element.classList.add("none");
+        });
+        document.getElementById(id)?.classList.remove("none");
     };
 }

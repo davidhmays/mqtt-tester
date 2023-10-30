@@ -19,6 +19,7 @@ import MqttClient from "mqtt/lib/client";
 import { ISubscriptionMap } from "mqtt/lib/client";
 import { IClientOptions } from "mqtt/lib/client";
 import { IClientSubscribeOptions } from "mqtt/lib/client";
+
 // import ClientOptions from "./modules/ClientOptions.ts";
 // import ClientSubscribeOptions from "./modules/ClientSubscribeOptions.ts";
 
@@ -76,10 +77,6 @@ const connect_to_broker = () => {
     mqtt_client!.on("close", () => {
         ui.connection_indicators(false);
     });
-
-    mqtt_client!.on("message", (topic, message) => {
-        console.log(topic.toString() + " " + message.toString());
-    });
 };
 
 ui.connect_btn.addEventListener("click", connect_to_broker);
@@ -100,7 +97,8 @@ function subscribe(topics: ISubscriptionMap | string[] | string, options?: IClie
             ui.subscription_list.innerHTML = "";
             const tree = map_to_tree(subscription_map);
             // map_print(tree); // for debugging tree structure.
-            render_tree(tree, ui.subscription_list);
+            ui.render_pages(mqtt_client as MqttClient, granted);
+            ui.render_tree(tree, ui.subscription_list);
         }
     });
 }

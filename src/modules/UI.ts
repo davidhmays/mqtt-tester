@@ -1,7 +1,12 @@
 import FormInput from "./FormInput";
 import * as DataGenerator from "../modules/DataGenerator.ts";
+import MqttClient, { IClientSubscribeOptions } from "mqtt/lib/client";
+import { ISubscriptionGrant } from "mqtt/lib/client";
+import DMChat from "../../ui_components/_ui.base/elements/dm-chat/dm-chat.ts";
 
 export default class UI {
+    public body: HTMLBodyElement = document.getElementById("body") as HTMLBodyElement
+
     // Connection page
     public connect_page: HTMLDivElement = document.getElementById("connect_page") as HTMLDivElement;
     public connect_form: HTMLFormElement = document.getElementById("connect_form") as HTMLFormElement;
@@ -16,7 +21,7 @@ export default class UI {
     public keep_alive = new FormInput("keep_alive_input", "60");
     public clean_session = new FormInput("clean_session_input");
     public connect_btn: HTMLButtonElement = document.getElementById("connect_btn")! as HTMLButtonElement;
-    
+
     // Subscription page
     public subscribe_page: HTMLDivElement = document.getElementById("subscribe_page") as HTMLDivElement;
     public subscribe_form: HTMLFormElement = document.getElementById("subscribe_form") as HTMLFormElement;
@@ -33,7 +38,7 @@ export default class UI {
         // Icons
         const disconnected_icons = document.querySelectorAll(".plug_disconnected");
         const connected_icons = document.querySelectorAll(".check_circle");
-    
+
         if (connection_state === true) {
             console.log("connected");
             connected_icons.forEach((element) => {
@@ -41,7 +46,7 @@ export default class UI {
                     element.classList.remove("none");
                 }
             });
-    
+
             disconnected_icons.forEach((element) => {
                 if (!element.classList.contains("none")) {
                     element.classList.add("none");
@@ -74,5 +79,34 @@ export default class UI {
             element.classList.add("none");
         });
         document.getElementById(id)?.classList.remove("none");
+    };
+
+    public render_tree = (tree: Map<string, IClientSubscribeOptions>, container: HTMLElement, currentTopic = "") => {
+        const list = document.createElement("ul");
+        container.appendChild(list);
+
+        for (const [key, value] of tree) {
+            const list_item = document.createElement("li");
+            list_item.textContent = key;
+
+            // Build the full topic path for this element
+            const full_topic = currentTopic ? currentTopic + "/" + key : key;
+            list_item.setAttribute("data-topic", full_topic);
+
+            list.appendChild(list_item);
+
+            if (value instanceof Map) {
+                this.render_tree(value, list_item, full_topic); // Pass the current full topic path
+            }
+        }
+    };
+
+    public render_pages = (mqtt_client: MqttClient, topics_granted: ISubscriptionGrant[]) => {
+        for (const topic of topics_granted) {
+                        
+            this.body.appendChild(new DMChat(mqtt_client, topic));
+        }
+
+
     };
 }

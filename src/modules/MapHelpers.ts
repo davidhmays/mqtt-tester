@@ -49,22 +49,4 @@ export const map_to_tree = (subscription_map: ISubscriptionMap) => {
     return tree;
 };
 
-export const render_tree = (tree: Map<string, IClientSubscribeOptions>, container: HTMLElement, currentTopic = "") => {
-    const list = document.createElement("ul");
-    container.appendChild(list);
 
-    for (const [key, value] of tree) {
-        const list_item = document.createElement("li");
-        list_item.textContent = key;
-
-        // Build the full topic path for this element
-        const full_topic = currentTopic ? currentTopic + "/" + key : key;
-        list_item.setAttribute("data-topic", full_topic);
-
-        list.appendChild(list_item);
-
-        if (value instanceof Map) {
-            render_tree(value, list_item, full_topic); // Pass the current full topic path
-        }
-    }
-};

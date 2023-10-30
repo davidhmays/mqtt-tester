@@ -1,0 +1,16 @@
+:host {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    background-color: black;
+    color: white;
+    overflow: hidden;
+}
+
+footer {
+    border-top: rgba(0,0,0,0.1);
+
+}
+
+section {
+    overflow: auto;
+}

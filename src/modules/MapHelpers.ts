@@ -24,3 +24,18 @@ export const map_to_tree = (topicMap: ISubscriptionMap) => {
     }
     return tree;
 };
+
+export const renderTree = (tree, container: HTMLElement) => {
+    const list = document.createElement(tree === "ol" ? "ol" : "ul");
+    container.appendChild(list);
+
+    for (const [key, value] of tree) {
+        const listItem = document.createElement("li");
+        listItem.textContent = key;
+        list.appendChild(listItem);
+
+        if (value instanceof Map) {
+            renderTree(value, listItem);
+        }
+    }
+}

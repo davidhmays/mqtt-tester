@@ -26,7 +26,7 @@ import * as DataGenerator from "./modules/DataGenerator.ts";
 import FormInput from "./modules/FormInput.ts";
 import init_custom_elements from "../ui_components/_ui.base/ui.base.ts";
 import SubscriptionMap from "./modules/SubscriptionMap.ts";
-import { map_print, map_to_tree } from "./modules/MapHelpers.ts";
+import { map_print, map_to_tree, renderTree } from "./modules/MapHelpers.ts";
 
 init_custom_elements();
 console.log(mqtt);
@@ -188,7 +188,7 @@ const update_subscription_map = (subscription_map: ISubscriptionMap, topics?: IS
 
 const refresh_dom_subscriptions = (subscription_map: ISubscriptionMap) => {
     const tree = map_to_tree(subscription_map);
-    renderTree(tree, document.getElementById("sub_list"));
+    renderTree(tree, document.getElementById("sub_list") as HTMLElement);
 
     map_print(tree); // for debugging tree structure.
 };
@@ -210,17 +210,3 @@ function subscribe(topics: ISubscriptionMap | string[] | string, options?: IClie
     });
 }
 
-function renderTree(tree, container) {
-    const list = document.createElement(tree === "ol" ? "ol" : "ul");
-    container.appendChild(list);
-
-    for (const [key, value] of tree) {
-        const listItem = document.createElement("li");
-        listItem.textContent = key;
-        list.appendChild(listItem);
-
-        if (value instanceof Map) {
-            renderTree(value, listItem);
-        }
-    }
-}

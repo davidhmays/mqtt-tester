@@ -5,7 +5,7 @@ import { ISubscriptionGrant } from "mqtt/lib/client";
 import DMChat from "../../ui_components/_ui.base/elements/dm-chat/dm-chat.ts";
 
 export default class UI {
-    public body: HTMLBodyElement = document.getElementById("body") as HTMLBodyElement
+    public body: HTMLBodyElement = document.getElementById("body") as HTMLBodyElement;
 
     // Connection page
     public connect_page: HTMLDivElement = document.getElementById("connect_page") as HTMLDivElement;
@@ -67,14 +67,21 @@ export default class UI {
         }
     };
 
-    public show = (to_show: HTMLElement | string) => {
+    public show = (to_show: HTMLElement | DMChat | string) => {
         let id = "";
+        let pages = undefined;
         if (typeof to_show === "string") {
             id = to_show;
-        } else if (to_show instanceof HTMLElement) {
+            pages = document.querySelectorAll(".page:not(#" + id + ")");
+        } else if (to_show instanceof HTMLDivElement) {
             id = to_show.id;
+            pages = document.querySelectorAll(".page:not(#" + id + ")");
+        } else if (to_show instanceof DMChat) {
+            const topic = to_show.getAttribute("data-topic");
+            pages = document.querySelectorAll(`.page:not([data-topic="${topic}"]`);
+            to_show.classList.remove("none");
         }
-        const pages = document.querySelectorAll(".page:not(#" + id + ")");
+
         pages.forEach((element) => {
             element.classList.add("none");
         });
@@ -103,10 +110,10 @@ export default class UI {
 
     public render_pages = (mqtt_client: MqttClient, topics_granted: ISubscriptionGrant[]) => {
         for (const topic of topics_granted) {
-                        
-            this.body.appendChild(new DMChat(mqtt_client, topic));
+            const chat_element = new DMChat(mqtt_client, topic);
+            this.body.appendChild(chat_element);
+            const topic_button = document.querySelector(`li[data-topic="${topic.topic}"]`) as HTMLLIElement;
+            topic_button.addEventListener("click", () => this.show(chat_element));
         }
-
-
     };
 }

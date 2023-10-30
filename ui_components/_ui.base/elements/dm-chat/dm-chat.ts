@@ -3,19 +3,28 @@ import DMElement from "../dm-element/dm-element";
 import cssText from "./dm-chat.css?inline";
 import htmlText from "./dm-chat.html?raw";
 
+//TODO: containerize subscriptions into each element??
 export default class DMChat extends DMElement {
-    constructor(mqtt_client: MqttClient, topic: ISubscriptionGrant) {
+    constructor(mqtt_client: MqttClient, subscription: ISubscriptionGrant) {
         super({
             htmlText: htmlText,
             cssText: cssText,
         });
-        this.id = topic.topic;
+        this.setAttribute("data-topic", subscription.topic);
+        this.classList.add("none");
+        this.classList.add("page");
 
-        const header1 = this.shadowRoot?.querySelector("header") as HTMLElement;
-        header1.innerHTML = topic.topic;
+        const header = this.shadowRoot?.querySelector("header") as HTMLElement;
+        header.innerHTML = subscription.topic;
+
+        const message_container = this.shadowRoot?.querySelector("section") as HTMLElement;
 
         mqtt_client!.on("message", (topic, message) => {
-            console.log(topic.toString() + " " + message.toString());
+            if (topic === subscription.topic) {
+                const div = document.createElement("div");
+                div.innerText = message;
+                message_container.appendChild(div);
+            }
         });
     }
 }

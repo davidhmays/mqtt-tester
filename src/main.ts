@@ -26,7 +26,7 @@ import * as DataGenerator from "./modules/DataGenerator.ts";
 import FormInput from "./modules/FormInput.ts";
 import init_custom_elements from "../ui_components/_ui.base/ui.base.ts";
 import SubscriptionMap from "./modules/SubscriptionMap.ts";
-import { map_print, map_to_tree, renderTree } from "./modules/MapHelpers.ts";
+import { map_print, map_to_tree, update_subscription_map, render_tree } from "./modules/MapHelpers.ts";
 
 init_custom_elements();
 console.log(mqtt);
@@ -167,29 +167,9 @@ const connect_to_broker = () => {
 
 connect_btn.addEventListener("click", connect_to_broker);
 
-const is_subscription_map = (input: any): input is ISubscriptionMap => typeof input === "object" && !Array.isArray(input);
-
-const update_subscription_map = (subscription_map: ISubscriptionMap, topics?: ISubscriptionMap | string[], options?: IClientSubscribeOptions) => {
-    // If topic is single string:
-    if (typeof topics === "string") {
-        subscription_map[topics] = options!;
-    }
-    // If topic is string[] array:
-    if (Array.isArray(topics)) {
-        for (const topic of topics) {
-            subscription_map[topic] = options!;
-        }
-        // If topic is a subscription map:
-    } else if (is_subscription_map(topics)) {
-        for (const topic in topics) {
-            subscription_map[topic] = topics[topic];
-        }
-    }
-};
-
 const refresh_dom_subscriptions = (subscription_map: ISubscriptionMap) => {
     const tree = map_to_tree(subscription_map);
-    renderTree(tree, subscription_list);
+    render_tree(tree, subscription_list);
 
     map_print(tree); // for debugging tree structure.
 };
@@ -206,9 +186,8 @@ function subscribe(topics: ISubscriptionMap | string[] | string, options?: IClie
         } else {
             console.log("Subscribed to topics:", granted);
             update_subscription_map(subscription_map, topics, options);
-            subscription_list.innerHTML=""
+            subscription_list.innerHTML = "";
             refresh_dom_subscriptions(subscription_map);
         }
     });
 }
-

@@ -2,7 +2,7 @@ import { IClientSubscribeOptions, ISubscriptionMap } from "mqtt/lib/client";
 
 export const is_subscription_map = (input: any): input is ISubscriptionMap => typeof input === "object" && !Array.isArray(input);
 
-export const update_subscription_map = (subscription_map: ISubscriptionMap, topics?: ISubscriptionMap | string[], options?: IClientSubscribeOptions) => {
+export const update_subscription_map = (subscription_map: ISubscriptionMap, topics?: ISubscriptionMap | string[] | string, options?: IClientSubscribeOptions) => {
     // If topic is single string:
     if (typeof topics === "string") {
         subscription_map[topics] = options!;
@@ -49,17 +49,17 @@ export const map_to_tree = (subscription_map: ISubscriptionMap) => {
     return tree;
 };
 
-export const render_tree = (tree: Map<string, IClientSubscribeOptions>, container: HTMLElement, currentTopic = '') => {
-    const list = document.createElement('ul');
+export const render_tree = (tree: Map<string, IClientSubscribeOptions>, container: HTMLElement, currentTopic = "") => {
+    const list = document.createElement("ul");
     container.appendChild(list);
 
     for (const [key, value] of tree) {
-        const list_item = document.createElement('li');
+        const list_item = document.createElement("li");
         list_item.textContent = key;
 
         // Build the full topic path for this element
-        const full_topic = currentTopic ? currentTopic + '/' + key : key;
-        list_item.setAttribute('data-topic', full_topic);
+        const full_topic = currentTopic ? currentTopic + "/" + key : key;
+        list_item.setAttribute("data-topic", full_topic);
 
         list.appendChild(list_item);
 
@@ -68,4 +68,3 @@ export const render_tree = (tree: Map<string, IClientSubscribeOptions>, containe
         }
     }
 };
-

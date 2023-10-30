@@ -26,7 +26,7 @@ export const map_to_tree = (topicMap: ISubscriptionMap) => {
 };
 
 export const renderTree = (tree, container: HTMLElement) => {
-    const list = document.createElement(tree === "ol" ? "ol" : "ul");
+    const list = document.createElement("ul");
     container.appendChild(list);
 
     for (const [key, value] of tree) {

@@ -64,6 +64,7 @@ const connected_icons = document.querySelectorAll(".check_circle");
 //Sidebar
 const add_sub_button: HTMLAnchorElement = document.getElementById("add_subscription") as HTMLAnchorElement;
 const open_conn_button: HTMLAnchorElement = document.getElementById("open_connection") as HTMLAnchorElement;
+const subscription_list: HTMLUListElement = document.getElementById("sub_list") as HTMLUListElement;
 
 // TODO: add topic to subscriptions. Or sub individually.
 subscribe_btn.addEventListener("click", () => subscribe(`${subscribe_topic.value}`, { qos: parseInt(`${subscribe_qos.value}`) as mqtt.QoS }));
@@ -188,7 +189,7 @@ const update_subscription_map = (subscription_map: ISubscriptionMap, topics?: IS
 
 const refresh_dom_subscriptions = (subscription_map: ISubscriptionMap) => {
     const tree = map_to_tree(subscription_map);
-    renderTree(tree, document.getElementById("sub_list") as HTMLElement);
+    renderTree(tree, subscription_list);
 
     map_print(tree); // for debugging tree structure.
 };
@@ -205,6 +206,7 @@ function subscribe(topics: ISubscriptionMap | string[] | string, options?: IClie
         } else {
             console.log("Subscribed to topics:", granted);
             update_subscription_map(subscription_map, topics, options);
+            subscription_list.innerHTML=""
             refresh_dom_subscriptions(subscription_map);
         }
     });

@@ -14,8 +14,8 @@ export default class DMChat extends DMElement {
         this.classList.add("none");
         this.classList.add("page");
 
-        const header = this.shadowRoot?.querySelector("header") as HTMLElement;
-        header.innerHTML = subscription.topic;
+        const title = this.shadowRoot?.querySelector("h1") as HTMLHeadingElement;
+        title.innerHTML = subscription.topic;
 
         const message_container = this.shadowRoot?.querySelector("section") as HTMLElement;
 

@@ -108,10 +108,12 @@ export default class UI {
         }
     };
 
-    // Would be best to use ISubscriptionGrant for accurate QoS levels granted. 
+    // Would be best to use ISubscriptionGrant for accurate QoS levels granted.
     public render_pages = (mqtt_client: MqttClient, subscriptions: ISubscriptionMap) => {
         for (const topic in subscriptions) {
             this.body.appendChild(new DMChat(mqtt_client, topic));
         }
     };
+
+    //kludge: could remove all page elements...
 }

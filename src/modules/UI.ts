@@ -1,6 +1,6 @@
 import FormInput from "./FormInput";
 import * as DataGenerator from "../modules/DataGenerator.ts";
-import MqttClient, { IClientSubscribeOptions } from "mqtt/lib/client";
+import MqttClient, { IClientSubscribeOptions, ISubscriptionMap } from "mqtt/lib/client";
 import { ISubscriptionGrant } from "mqtt/lib/client";
 import DMChat from "../../ui_components/_ui.base/elements/dm-chat/dm-chat.ts";
 
@@ -108,12 +108,10 @@ export default class UI {
         }
     };
 
-    public render_pages = (mqtt_client: MqttClient, topics_granted: ISubscriptionGrant[]) => {
-        for (const topic of topics_granted) {
-            const chat_element = new DMChat(mqtt_client, topic);
-            this.body.appendChild(chat_element);
-            const topic_button = document.querySelector(`li[data-topic="${topic.topic}"]`) as HTMLLIElement;
-            topic_button.addEventListener("click", () => this.show(chat_element));
+    // Would be best to use ISubscriptionGrant for accurate QoS levels granted. 
+    public render_pages = (mqtt_client: MqttClient, subscriptions: ISubscriptionMap) => {
+        for (const topic in subscriptions) {
+            this.body.appendChild(new DMChat(mqtt_client, topic));
         }
     };
 }

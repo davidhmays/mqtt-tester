@@ -98,8 +98,7 @@ function subscribe(topics: ISubscriptionMap | string[] | string, options?: IClie
             const tree = map_to_tree(subscription_map);
             // map_print(tree); // for debugging tree structure.
             ui.render_tree(tree, ui.subscription_list);
-
-            ui.render_pages(mqtt_client as MqttClient, granted);
+            ui.render_pages(mqtt_client as MqttClient, subscription_map); // would prefer "granted" here.
         }
     });
 }

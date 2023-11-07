@@ -38,7 +38,7 @@ export default class DMChat extends DMElement {
 
         const topic_button = document.querySelector(`li[data-topic="${topic_input}"]`) as HTMLLIElement;
         topic_button.addEventListener("click", (event) => {
-            alert(event.target.getAttribute("data-topic"));
+            // alert(event.target.getAttribute("data-topic"));
             console.log(topic_input + "|" + this.getAttribute("data-topic"));
             show_self();
         });

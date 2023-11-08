@@ -15,7 +15,7 @@ export default class FormInput {
 
     private update_value(input_value: string | boolean | undefined) {
         if (input_value !== undefined) {
-            if (this.input_element instanceof HTMLElement) {
+            if (this.input_element instanceof HTMLInputElement) {
                 this.value = input_value;
                 this.input_element.value = `${this.value}`;
             } else if (this.input_element instanceof DMSwitch) {

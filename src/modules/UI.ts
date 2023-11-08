@@ -38,6 +38,9 @@ export default class UI {
     public open_conn_btn: HTMLAnchorElement = document.getElementById("open_connection") as HTMLAnchorElement;
     public subscription_list: HTMLUListElement = document.getElementById("sub_list") as HTMLUListElement;
 
+    //Footer
+    public footer: HTMLElement = document.getElementById("footer") as HTMLElement;
+
     public connection_indicators = (connection_state: boolean) => {
         // Icons
         const disconnected_icons = document.querySelectorAll(".plug_disconnected");
@@ -116,12 +119,12 @@ export default class UI {
     // Would be best to use ISubscriptionGrant for accurate QoS levels granted.
     public render_pages = (mqtt_client: MqttClient, subscriptions: ISubscriptionMap) => {
         for (const topic in subscriptions) {
-            this.body.appendChild(new DMChat(mqtt_client, topic));
+            this.footer.insertAdjacentElement("beforebegin", new DMChat(mqtt_client, topic));
         }
     };
 
     private mobile_test = () => {
-        if ("maxTouchPoints" in navigator && navigator.maxTouchPoints > 0) {
+        if (window.innerWidth <= 780) {
             const mobile_elements = document.querySelectorAll(".mobile");
             mobile_elements.forEach((element) => {
                 element.classList.remove("none");

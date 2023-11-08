@@ -27,8 +27,14 @@ aside {
   border-right: solid 1px rgba(0, 0, 0, 0.1);
 }
 
-aside .collapsed {
+aside.collapsed {
   width: 0;
+  padding: 0;
+  display: none;
+}
+
+aside.collapsed * {
+  display: none;
 }
 
 aside li {

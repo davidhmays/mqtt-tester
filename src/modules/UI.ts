@@ -5,12 +5,14 @@ import { ISubscriptionGrant } from "mqtt/lib/client";
 import DMChat from "../../ui_components/_ui.base/elements/dm-chat/dm-chat.ts";
 
 export default class UI {
+    private url_path: string = import.meta.env.DEV === true ? "ws://broker.hivemq.com:8000/mqtt" : "wss://broker.hivemq.com:8884/mqtt";
+
     public body: HTMLBodyElement = document.getElementById("body") as HTMLBodyElement;
 
     // Connection page
     public connect_page: HTMLDivElement = document.getElementById("connect_page") as HTMLDivElement;
     public connect_form: HTMLFormElement = document.getElementById("connect_form") as HTMLFormElement;
-    public url = new FormInput("url_input", "mqtt://broker.hivemq.com:8000/mqtt"); // Note: some brokers might expect "ws://, not mqtt:// as this is a websocket connection"
+    public url = new FormInput("url_input", this.url_path); // Note: some brokers might expect "ws://, not mqtt:// as this is a websocket connection"
     public user = new FormInput("user_id_input", DataGenerator.user(), "user_id_output");
     public client_id = new FormInput("client_id_input", DataGenerator.id(), "client_id_output");
     public password = new FormInput("password_input");
@@ -89,7 +91,8 @@ export default class UI {
     };
 
     public render_tree = (tree: Map<string, IClientSubscribeOptions>, container: HTMLElement, currentTopic = "") => {
-        const list = document.createElement("ul");this.connect_page
+        const list = document.createElement("ul");
+        this.connect_page;
         container.appendChild(list);
 
         for (const [key, value] of tree) {

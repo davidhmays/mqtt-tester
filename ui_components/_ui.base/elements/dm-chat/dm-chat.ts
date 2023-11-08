@@ -29,7 +29,7 @@ export default class DMChat extends DMElement {
         };
 
         topic_btn.addEventListener("click", (event) => {
-            event.preventDefault();
+            event.stopPropagation();
             console.log(topic_input + "|" + this.getAttribute("data-topic"));
             show_self();
         });

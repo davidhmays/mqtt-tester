@@ -32,6 +32,8 @@ export default class UI {
     public subscribe_btn: HTMLButtonElement = document.getElementById("subscribe_btn") as HTMLButtonElement;
 
     //Sidebar
+    public sidebar: HTMLElement = document.getElementById("sidebar") as HTMLElement;
+    public sidebar_btn_open: HTMLButtonElement = document.getElementById("open_sidebar") as HTMLButtonElement;
     public add_sub_btn: HTMLAnchorElement = document.getElementById("add_subscription") as HTMLAnchorElement;
     public open_conn_btn: HTMLAnchorElement = document.getElementById("open_connection") as HTMLAnchorElement;
     public subscription_list: HTMLUListElement = document.getElementById("sub_list") as HTMLUListElement;
@@ -117,6 +119,21 @@ export default class UI {
             this.body.appendChild(new DMChat(mqtt_client, topic));
         }
     };
+
+    private mobile_test = () => {
+        if ("maxTouchPoints" in navigator && navigator.maxTouchPoints > 0) {
+            const mobile_elements = document.querySelectorAll(".mobile");
+            mobile_elements.forEach((element) => {
+                element.classList.remove("none");
+            });
+            this.sidebar.classList.add("collapsed");
+        }
+    };
+
+    constructor() {
+        this.mobile_test();
+        this.sidebar_btn_open.addEventListener("click", () => this.sidebar.classList.toggle("collapsed"));
+    }
 
     //kludge: could remove all page elements...
 }

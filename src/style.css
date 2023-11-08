@@ -19,12 +19,16 @@ body {
 body {
   display: grid;
   grid-template-columns: auto 1fr;
-  grid-template-rows: 1fr;
+  grid-template-rows: 1fr auto;
 }
 
 aside {
   padding: 1rem;
   border-right: solid 1px rgba(0, 0, 0, 0.1);
+}
+
+aside .collapsed {
+  width: 0;
 }
 
 aside li {
@@ -110,7 +114,12 @@ footer {
   width: 100%;
 }
 
-
+body > footer {
+  grid-column: span 2;
+  width: 100%;
+  background-color: black;
+  padding: 8px;
+}
 
 button {
   background-color: black;
@@ -254,3 +263,4 @@ nav > ul > li, #sub_list > li, #setup_list > li {
 .none {
   display: none;
 }
+

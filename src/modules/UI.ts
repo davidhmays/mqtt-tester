@@ -16,7 +16,7 @@ export default class UI {
     public password = new FormInput("password_input");
     public lwt_topic = new FormInput("lwt_topic_input", "wi/disconnect"); //auto update topic name?
     public lwt_message = new FormInput("lwt_message_input", "So long, and thanks for all the fish.");
-    public lwt_qos = new FormInput("lwt_qos_input");
+    public lwt_qos = new FormInput("lwt_qos_input", "1");
     public lwt_retain = new FormInput("lwt_retain_input");
     public keep_alive = new FormInput("keep_alive_input", "60");
     public clean_session = new FormInput("clean_session_input");
@@ -89,7 +89,7 @@ export default class UI {
     };
 
     public render_tree = (tree: Map<string, IClientSubscribeOptions>, container: HTMLElement, currentTopic = "") => {
-        const list = document.createElement("ul");
+        const list = document.createElement("ul");this.connect_page
         container.appendChild(list);
 
         for (const [key, value] of tree) {

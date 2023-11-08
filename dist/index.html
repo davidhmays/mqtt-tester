@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <title>MQTT Tester</title>
+  <script type="module" crossorigin src="/assets/index-38332872.js"></script>
+  <link rel="stylesheet" href="/assets/index-7c8861d1.css">
+</head>
+
+<!---------------------------------------------------
+    YES this is all spaghetti. It's for testing... 
+----------------------------------------------------->
+
+<body id="body">
+  <aside>
+    <header>
+      <h1>MQTT Tester</h1>
+    </header>
+    <div id="user_id_output"></div>
+    <div id="client_id_output"></div>
+
+
+    <nav>
+      <ul>
+        <li>
+          <h2>Setup</h2>
+          <ul id="setup_list">
+            <li style="display: flex; align-content: center;">
+              <a href="#" id="open_connection">Connect</a>
+
+              <svg xmlns="http://www.w3.org/2000/svg" style="margin-left: auto" id="checkmark"
+                class="none icon check_circle" width="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffec00"
+                fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path
+                  d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-1.293 5.953a1 1 0 0 0 -1.32 -.083l-.094 .083l-3.293 3.292l-1.293 -1.292l-.094 -.083a1 1 0 0 0 -1.403 1.403l.083 .094l2 2l.094 .083a1 1 0 0 0 1.226 0l.094 -.083l4 -4l.083 -.094a1 1 0 0 0 -.083 -1.32z"
+                  stroke-width="0" fill="black" />
+              </svg>
+
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon plug_disconnected" style="margin-left: auto;"
+                id="plug_disconnected" width="16" viewBox="0 0 24 24" stroke-width="2" stroke="red" fill="none"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M20 16l-4 4"></path>
+                <path d="M7 12l5 5l-1.5 1.5a3.536 3.536 0 1 1 -5 -5l1.5 -1.5z"></path>
+                <path d="M17 12l-5 -5l1.5 -1.5a3.536 3.536 0 1 1 5 5l-1.5 1.5z"></path>
+                <path d="M3 21l2.5 -2.5"></path>
+                <path d="M18.5 5.5l2.5 -2.5"></path>
+                <path d="M10 11l-2 2"></path>
+                <path d="M13 14l-2 2"></path>
+                <path d="M16 16l4 4"></path>
+              </svg>
+            </li>
+            <li>
+              <a href="#" id="add_subscription">Subscribe</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <h2>Subscriptions</h2>
+          <ul id="sub_list">
+
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div id="connect_page" class="page">
+    <form action="" id="connect_form" class="card" onsubmit="return false;">
+      <header>
+        <h1>Connect</h1>
+        <svg xmlns="http://www.w3.org/2000/svg" id="checkmark" class="none icon check_circle" width="44" height="44"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffec00" fill="none" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path
+            d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-1.293 5.953a1 1 0 0 0 -1.32 -.083l-.094 .083l-3.293 3.292l-1.293 -1.292l-.094 -.083a1 1 0 0 0 -1.403 1.403l.083 .094l2 2l.094 .083a1 1 0 0 0 1.226 0l.094 -.083l4 -4l.083 -.094a1 1 0 0 0 -.083 -1.32z"
+            stroke-width="0" fill="black" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" style="margin-left: auto" class="icon plug_disconnected"
+          id="plug_disconnected" width="44" height="44" viewBox="0 0 24 24" stroke-width="2" stroke="red" fill="none"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+          <path d="M20 16l-4 4"></path>
+          <path d="M7 12l5 5l-1.5 1.5a3.536 3.536 0 1 1 -5 -5l1.5 -1.5z"></path>
+          <path d="M17 12l-5 -5l1.5 -1.5a3.536 3.536 0 1 1 5 5l-1.5 1.5z"></path>
+          <path d="M3 21l2.5 -2.5"></path>
+          <path d="M18.5 5.5l2.5 -2.5"></path>
+          <path d="M10 11l-2 2"></path>
+          <path d="M13 14l-2 2"></path>
+          <path d="M16 16l4 4"></path>
+        </svg>
+      </header>
+
+      <div class="form_content">
+        <div class="form_group">
+          <label for="">URL</label>
+          <input type="text" id="url_input" autocomplete="off">
+        </div>
+
+        <div class="form_group">
+          <label>Client Id</label>
+          <input type="text" id="client_id_input" autocomplete="off">
+        </div>
+
+        <div class="form_group">
+          <label>User Name</label>
+          <input type="text" id="user_id_input" autocomplete="off">
+        </div>
+
+        <div class="form_group">
+          <label>Password</label>
+          <input type="text" id="password_input" autocomplete="off">
+        </div>
+
+        <div class="form_group">
+          <label>Keep Alive</label>
+          <input type="number" min="1" max="65535" id="keep_alive_input" autocomplete="off" oninput="(validity.valid)||(value='');">
+        </div>
+
+        <div class="form_group">
+          <label>LWT Topic</label>
+          <input type="text" id="lwt_topic_input" autocomplete="off">
+        </div>
+        <div class="form_group">
+          <label>LWT Message</label>
+          <input type="text" id="lwt_message_input" autocomplete="off">
+        </div>
+        <div class="form_group">
+          <label>LWT QoS</label>
+          <input type="number" id="lwt_qos_input" autocomplete="off"  min="0" max="2" oninput="(validity.valid)||(value='');">
+        </div>
+
+        <div style="display: flex; align-content: center;">
+          <label>Last Will Retain</label>
+          <dm-switch id="lwt_retain_input"></dm-switch>
+        </div>
+
+        <div style="display: flex; align-content: center;">
+          <label>Clean Session</label>
+          <dm-switch id="clean_session_input"></dm-switch>
+        </div>
+
+        <!-- <div style="display: flex; align-content: center;">
+          <label>SSL</label>
+          <dm-switch on id="ssl_input"></dm-switch>
+          
+        </div> -->
+      </div>
+
+      <footer>
+        <!-- <button class="secondary" id="get_id">Get client id</button> -->
+        <!-- <button class="secondary" id="disconnect">Disconnect</button> -->
+        <button id="connect_btn">Connect</button>
+      </footer>
+    </form>
+  </div>
+
+  <div id="subscribe_page" class="page none">
+    <form action="" id="subscribe_form" class="card" onsubmit="return false;">
+      <header>
+        <h1>Subscribe</h1>
+      </header>
+
+      <div class="subscribe_form_content">
+        <div class="form_group">
+          <label for="">Topic</label>
+          <input type="text" id="subscribe_topic_input" autocomplete="off">
+        </div>
+
+        <div class="form_group">
+          <label>QoS</label>
+          <input type="number" id="subscribe_qos_input" autocomplete="off" min="0" max="2" oninput="(validity.valid)||(value='');">
+        </div>
+      </div>
+
+      <footer>
+        <button id="subscribe_btn">Subscribe</button>
+      </footer>
+    </form>
+  </div>
+
+
+
+
+
+</body>
+
+</html>

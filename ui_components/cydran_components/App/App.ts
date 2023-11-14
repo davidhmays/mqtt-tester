@@ -80,7 +80,7 @@ cydran
     .builder("body")
     // .withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? `${str}s` : str))
     .withPrototype(App.name, App, args().withProperty(PERSONALIZED).withInstanceId(11).build())
-    .withPrototype(TodoItem.name, TodoItem)
+    // .withPrototype(TodoItem.name, TodoItem)
     .withInitializer((stage) => {
         stage.setComponentFromRegistry(App.name);
     })

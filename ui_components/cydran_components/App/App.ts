@@ -77,7 +77,7 @@ class App extends Component {
 }
 
 cydran
-    .builder("div")
+    .builder("body")
     // .withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? `${str}s` : str))
     .withPrototype(App.name, App, args().withProperty(PERSONALIZED).withInstanceId(11).build())
     .withPrototype(TodoItem.name, TodoItem)

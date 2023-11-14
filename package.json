@@ -13,6 +13,7 @@
     "vite": "^4.4.5"
   },
   "dependencies": {
+    "cydran": "^0.2.1",
     "mqtt": "^5.1.2"
   }
 }
